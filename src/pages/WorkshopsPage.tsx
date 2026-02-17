@@ -1,0 +1,184 @@
+import { useState, useEffect, useContext } from 'react'
+import { getWorkshops, getTrainings, registerToWorkshop, getUserRegistrations, getFormQuestions } from '../lib/supabaseClient'
+import { AuthContext } from '../context/AuthContext'
+import WorkshopCard from '../components/WorkshopCard'
+import RegistrationForm from '../components/RegistrationForm'
+import './WorkshopsPage.css'
+
+export default function WorkshopsPage() {
+  const { user } = useContext(AuthContext)
+  const [workshops, setWorkshops] = useState<any[]>([])
+  const [trainings, setTrainings] = useState<any[]>([])
+  const [userRegistrations, setUserRegistrations] = useState<any[]>([])
+  const [formQuestions, setFormQuestions] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
+  const [activeTab, setActiveTab] = useState('workshops')
+  const [selectedItem, setSelectedItem] = useState<any>(null)
+  const [showRegistrationForm, setShowRegistrationForm] = useState(false)
+
+  useEffect(() => {
+    loadData()
+  }, [])
+
+  const loadData = async () => {
+    try {
+      setLoading(true)
+      
+      const [workshopsRes, trainingsRes, questionsRes] = await Promise.all([
+        getWorkshops(),
+        getTrainings(),
+        getFormQuestions()
+      ])
+
+      if (workshopsRes.error) throw workshopsRes.error
+      if (trainingsRes.error) throw trainingsRes.error
+      if (questionsRes.error) throw questionsRes.error
+
+      setWorkshops(workshopsRes.data || [])
+      setTrainings(trainingsRes.data || [])
+      setFormQuestions(questionsRes.data || [])
+
+      if (user && user.id !== 'guest' && !user.id.startsWith('guest-')) {
+        const regsRes = await getUserRegistrations(user.id)
+        if (!regsRes.error) {
+          setUserRegistrations(regsRes.data || [])
+        }
+      }
+    } catch (error) {
+      console.error('Error loading data:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleRegister = async (registration: any) => {
+    try {
+      const result = await registerToWorkshop({
+        ...registration,
+        user_id: user.id,
+        workshop_id: selectedItem.id,
+        created_at: new Date().toISOString()
+      })
+
+      if (result.error) throw result.error
+
+      setUserRegistrations([...userRegistrations, result.data?.[0]])
+      setShowRegistrationForm(false)
+      setSelectedItem(null)
+    } catch (error) {
+      console.error('Error registering:', error)
+    }
+  }
+
+  const isRegistered = (itemId: string) => {
+    return userRegistrations.some(reg => reg.workshop_id === itemId)
+  }
+
+  const isGuest = user?.id.startsWith('guest-')
+
+  if (loading) {
+    return <div className="loading">Cargando...</div>
+  }
+
+  return (
+    <div className="workshops-page">
+      <div className="page-header">
+        <h1>Talleres y Entrenamientos</h1>
+        <p>Únete a nuestras actividades de Acroyoga</p>
+      </div>
+
+      <div className="tabs">
+        <button
+          className={`tab-button ${activeTab === 'workshops' ? 'active' : ''}`}
+          onClick={() => setActiveTab('workshops')}
+        >
+          📋 Talleres ({workshops.length})
+        </button>
+        <button
+          className={`tab-button ${activeTab === 'trainings' ? 'active' : ''}`}
+          onClick={() => setActiveTab('trainings')}
+        >
+          🏋️ Entrenamientos ({trainings.length})
+        </button>
+      </div>
+
+      <div className="content">
+        {activeTab === 'workshops' && (
+          <div className="items-grid">
+            {workshops.length === 0 ? (
+              <p className="empty-state">No hay talleres disponibles</p>
+            ) : (
+              workshops.map(workshop => (
+                <WorkshopCard
+                  key={workshop.id}
+                  title={workshop.title}
+                  description={workshop.description}
+                  date={new Date(workshop.date).toLocaleDateString('es-ES', {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                  })}
+                  isRegistered={isRegistered(workshop.id)}
+                  isGuest={isGuest}
+                  onRegister={() => {
+                    if (!isRegistered(workshop.id)) {
+                      setSelectedItem(workshop)
+                      setShowRegistrationForm(true)
+                    }
+                  }}
+                />
+              ))
+            )}
+          </div>
+        )}
+
+        {activeTab === 'trainings' && (
+          <div className="items-grid">
+            {trainings.length === 0 ? (
+              <p className="empty-state">No hay entrenamientos disponibles</p>
+            ) : (
+              trainings.map(training => (
+                <WorkshopCard
+                  key={training.id}
+                  title="Entrenamiento"
+                  description="Sesión de entrenamiento grupal"
+                  date={new Date(training.date).toLocaleDateString('es-ES', {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                  })}
+                  isRegistered={isRegistered(training.id)}
+                  isGuest={isGuest}
+                  onRegister={() => {
+                    if (!isRegistered(training.id)) {
+                      setSelectedItem(training)
+                      setShowRegistrationForm(true)
+                    }
+                  }}
+                />
+              ))
+            )}
+          </div>
+        )}
+      </div>
+
+      {showRegistrationForm && selectedItem && !isGuest && (
+        <RegistrationForm
+          item={selectedItem}
+          formQuestions={formQuestions}
+          onSubmit={handleRegister}
+          onClose={() => {
+            setShowRegistrationForm(false)
+            setSelectedItem(null)
+          }}
+        />
+      )}
+    </div>
+  )
+}
