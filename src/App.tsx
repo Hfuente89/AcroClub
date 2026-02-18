@@ -4,6 +4,7 @@ import { initSupabaseClient } from './lib/supabaseClient'
 import { AuthContext, User } from './context/AuthContext'
 import LoginPage from './pages/LoginPage'
 import WorkshopsPage from './pages/WorkshopsPage'
+import ProfilePage from './pages/ProfilePage'
 import AdminPanel from './pages/AdminPanel'
 import Navigation from './components/Navigation'
 import './App.css'
@@ -49,6 +50,7 @@ function App() {
           ) : (
             <>
               <Route path="/" element={<WorkshopsPage />} />
+              <Route path="/profile" element={<ProfilePage />} />
               {isAdmin && <Route path="/admin" element={<AdminPanel />} />}
               <Route path="*" element={<Navigate to="/" />} />
             </>

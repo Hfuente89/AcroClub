@@ -83,16 +83,27 @@ export default function WorkshopsPage() {
 
   const handleRegisterDirectly = async (item: any) => {
     try {
-      if (!user) return
+      if (!user) {
+        alert('No estás logueado')
+        return
+      }
+      
+      console.log('Registrando usuario:', user.id, 'a taller:', item.id)
       
       // Registrar socio directamente sin formulario
       const result = await registerToWorkshop({
         user_id: user.id,
         workshop_id: item.id,
+        full_name: user.email || 'Socio',
+        phone: '000000000',
+        email: user.email || '',
         created_at: new Date().toISOString()
       })
 
+      console.log('Resultado de registro:', result)
+
       if (result.error) {
+        console.error('Error de Supabase:', result.error)
         alert('Error al registrarse: ' + result.error.message)
         throw result.error
       }
@@ -171,8 +182,8 @@ export default function WorkshopsPage() {
                   isGuest={isGuest}
                   onRegister={() => {
                     if (!isRegistered(workshop.id)) {
-                      // Si es socio, registrar directamente sin formulario
-                      if (user?.role === 'socio') {
+                      // Si es socio o admin, registrar directamente sin formulario
+                      if (user?.role === 'socio' || user?.role === 'admin') {
                         handleRegisterDirectly(workshop)
                       } else if (user?.role === 'guest') {
                         // Si es invitado, mostrar formulario
@@ -209,8 +220,8 @@ export default function WorkshopsPage() {
                   isGuest={isGuest}
                   onRegister={() => {
                     if (!isRegistered(training.id)) {
-                      // Si es socio, registrar directamente sin formulario
-                      if (user?.role === 'socio') {
+                      // Si es socio o admin, registrar directamente sin formulario
+                      if (user?.role === 'socio' || user?.role === 'admin') {
                         handleRegisterDirectly(training)
                       } else if (user?.role === 'guest') {
                         // Si es invitado, mostrar formulario

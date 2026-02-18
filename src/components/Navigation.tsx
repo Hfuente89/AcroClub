@@ -39,6 +39,13 @@ export default function Navigation() {
             </button>
           )}
 
+          <button
+            onClick={() => navigate('/profile')}
+            className="nav-button"
+          >
+            👤 Perfil
+          </button>
+
           <div className="nav-user-info">
             {!isGuest && <span className="user-email">{user?.email}</span>}
             {isGuest && <span className="user-email">👤 Invitado</span>}
