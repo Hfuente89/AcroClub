@@ -73,6 +73,23 @@ export default function WorkshopsPage() {
     }
   }
 
+  const handleRegisterDirectly = async (item: any) => {
+    try {
+      // Registrar socio directamente sin formulario
+      const result = await registerToWorkshop({
+        user_id: user.id,
+        workshop_id: item.id,
+        created_at: new Date().toISOString()
+      })
+
+      if (result.error) throw result.error
+
+      setUserRegistrations([...userRegistrations, result.data?.[0]])
+    } catch (error) {
+      console.error('Error registering:', error)
+    }
+  }
+
   const isRegistered = (itemId: string) => {
     return userRegistrations.some(reg => reg.workshop_id === itemId)
   }
@@ -81,7 +98,7 @@ export default function WorkshopsPage() {
     setSelectedActivity(activity)
   }
 
-  const isGuest = user?.id.startsWith('guest-') || false
+  const isGuest = user?.role === 'guest'
 
   if (loading) {
     return <div className="loading">Cargando...</div>
@@ -138,8 +155,14 @@ export default function WorkshopsPage() {
                   isGuest={isGuest}
                   onRegister={() => {
                     if (!isRegistered(workshop.id)) {
-                      setSelectedItem(workshop)
-                      setShowRegistrationForm(true)
+                      // Si es socio, registrar directamente sin formulario
+                      if (user?.role === 'socio') {
+                        handleRegisterDirectly(workshop)
+                      } else if (user?.role === 'guest') {
+                        // Si es invitado, mostrar formulario
+                        setSelectedItem(workshop)
+                        setShowRegistrationForm(true)
+                      }
                     }
                   }}
                 />
@@ -170,8 +193,14 @@ export default function WorkshopsPage() {
                   isGuest={isGuest}
                   onRegister={() => {
                     if (!isRegistered(training.id)) {
-                      setSelectedItem(training)
-                      setShowRegistrationForm(true)
+                      // Si es socio, registrar directamente sin formulario
+                      if (user?.role === 'socio') {
+                        handleRegisterDirectly(training)
+                      } else if (user?.role === 'guest') {
+                        // Si es invitado, mostrar formulario
+                        setSelectedItem(training)
+                        setShowRegistrationForm(true)
+                      }
                     }
                   }}
                 />
@@ -189,7 +218,7 @@ export default function WorkshopsPage() {
         )}
       </div>
 
-      {showRegistrationForm && selectedItem && !isGuest && (
+      {showRegistrationForm && selectedItem && (
         <RegistrationForm
           item={selectedItem}
           formQuestions={formQuestions}

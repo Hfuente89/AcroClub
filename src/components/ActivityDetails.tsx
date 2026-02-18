@@ -24,7 +24,8 @@ export default function ActivityDetails({ activity, onClose }: ActivityDetailsPr
   const [loading, setLoading] = useState(true)
 
   // Determinar si el usuario puede ver los asistentes
-  const canViewAttendees = user?.role === 'admin' || user?.role === 'user'
+  // Admin y socios pueden ver, invitados no
+  const canViewAttendees = user?.role === 'admin' || user?.role === 'socio'
 
   useEffect(() => {
     if (canViewAttendees) {

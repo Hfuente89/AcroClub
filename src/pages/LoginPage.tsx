@@ -1,6 +1,6 @@
 import { useState, useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { signIn, signUp } from '../lib/supabaseClient'
+import { signIn, signUp, getUserProfile } from '../lib/supabaseClient'
 import { AuthContext } from '../context/AuthContext'
 import './LoginPage.css'
 
@@ -29,10 +29,19 @@ export default function LoginPage() {
       if (result.error) {
         setError(result.error.message || 'Error en la autenticación')
       } else {
+        const userId = result.data?.user?.id || ''
+        
+        // Obtener el perfil del usuario para obtener su rol
+        let userRole = 'socio'
+        const profileResult = await getUserProfile(userId)
+        if (!profileResult.error && profileResult.data) {
+          userRole = profileResult.data.role || 'socio'
+        }
+
         const userData = {
-          id: result.data?.user?.id || '',
+          id: userId,
           email: email,
-          role: 'user' as const
+          role: userRole as 'admin' | 'socio' | 'guest'
         }
         setUser(userData)
         localStorage.setItem('acroyoga_session', JSON.stringify(userData))
@@ -52,6 +61,7 @@ export default function LoginPage() {
       role: 'guest' as const
     }
     setUser(guestUser)
+    localStorage.setItem('acroyoga_session', JSON.stringify(guestUser))
     navigate('/')
   }
 

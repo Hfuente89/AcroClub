@@ -163,3 +163,22 @@ export const createFormQuestion = async (question: any) => {
     .insert([question])
   return { data, error }
 }
+// User Profile functions
+export const getUserProfile = async (userId: string) => {
+  const client = getSupabaseClient()
+  const { data, error } = await client
+    .from('user_profiles')
+    .select('*')
+    .eq('id', userId)
+    .single()
+  return { data, error }
+}
+
+export const updateUserProfile = async (userId: string, profile: any) => {
+  const client = getSupabaseClient()
+  const { data, error } = await client
+    .from('user_profiles')
+    .update(profile)
+    .eq('id', userId)
+  return { data, error }
+}
