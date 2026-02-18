@@ -7,6 +7,7 @@ interface WorkshopCardProps {
   isRegistered: boolean
   isGuest: boolean
   onRegister: () => void
+  onViewDetails?: () => void
 }
 
 export default function WorkshopCard({
@@ -15,7 +16,8 @@ export default function WorkshopCard({
   date,
   isRegistered,
   isGuest,
-  onRegister
+  onRegister,
+  onViewDetails
 }: WorkshopCardProps) {
   return (
     <div className="workshop-card">
@@ -29,15 +31,26 @@ export default function WorkshopCard({
       <div className="card-footer">
         <div className="card-date">📅 {date}</div>
 
-        {!isGuest && (
-          <button
-            onClick={onRegister}
-            className={`card-button ${isRegistered ? 'registered' : ''}`}
-            disabled={isRegistered}
-          >
-            {isRegistered ? 'Registrado' : 'Registrarse'}
-          </button>
-        )}
+        <div className="card-buttons">
+          {onViewDetails && (
+            <button
+              onClick={onViewDetails}
+              className="card-button-secondary"
+            >
+              ℹ️ Detalles
+            </button>
+          )}
+
+          {!isGuest && (
+            <button
+              onClick={onRegister}
+              className={`card-button ${isRegistered ? 'registered' : ''}`}
+              disabled={isRegistered}
+            >
+              {isRegistered ? 'Registrado' : 'Registrarse'}
+            </button>
+          )}
+        </div>
       </div>
     </div>
   )

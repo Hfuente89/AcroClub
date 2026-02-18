@@ -180,6 +180,7 @@ export default function WorkshopsPage() {
                   })}
                   isRegistered={isRegistered(workshop.id)}
                   isGuest={isGuest}
+                  onViewDetails={() => handleActivityClick(workshop)}
                   onRegister={() => {
                     if (!isRegistered(workshop.id)) {
                       // Si es socio o admin, registrar directamente sin formulario
@@ -218,6 +219,7 @@ export default function WorkshopsPage() {
                   })}
                   isRegistered={isRegistered(training.id)}
                   isGuest={isGuest}
+                  onViewDetails={() => handleActivityClick(training)}
                   onRegister={() => {
                     if (!isRegistered(training.id)) {
                       // Si es socio o admin, registrar directamente sin formulario
