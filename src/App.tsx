@@ -38,7 +38,7 @@ function App() {
 
   return (
     <AuthContext.Provider value={{ user, setUser, isAdmin, setIsAdmin }}>
-      <Router>
+      <Router basename="/AcroClub">
         {user && <Navigation />}
         <Routes>
           {!user ? (
