@@ -182,3 +182,21 @@ export const updateUserProfile = async (userId: string, profile: any) => {
     .eq('id', userId)
   return { data, error }
 }
+
+export const getAllUserProfiles = async () => {
+  const client = getSupabaseClient()
+  const { data, error } = await client
+    .from('user_profiles')
+    .select('*')
+    .order('created_at', { ascending: false })
+  return { data, error }
+}
+
+export const updateUserRole = async (userId: string, newRole: string) => {
+  const client = getSupabaseClient()
+  const { data, error } = await client
+    .from('user_profiles')
+    .update({ role: newRole })
+    .eq('id', userId)
+  return { data, error }
+}

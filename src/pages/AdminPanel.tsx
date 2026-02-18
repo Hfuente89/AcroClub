@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { getWorkshops, getTrainings, createWorkshop, deleteWorkshop, createTraining, deleteTraining, getFormQuestions, updateFormQuestion } from '../lib/supabaseClient'
+import { getWorkshops, getTrainings, createWorkshop, deleteWorkshop, createTraining, deleteTraining, getFormQuestions, updateFormQuestion, getAllUserProfiles, updateUserRole } from '../lib/supabaseClient'
 import './AdminPanel.css'
 
 export default function AdminPanel() {
@@ -7,6 +7,7 @@ export default function AdminPanel() {
   const [workshops, setWorkshops] = useState<any[]>([])
   const [trainings, setTrainings] = useState<any[]>([])
   const [formQuestions, setFormQuestions] = useState<any[]>([])
+  const [users, setUsers] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
 
   // Workshop form
@@ -28,15 +29,17 @@ export default function AdminPanel() {
   const loadData = async () => {
     try {
       setLoading(true)
-      const [workshopsRes, trainingsRes, questionsRes] = await Promise.all([
+      const [workshopsRes, trainingsRes, questionsRes, usersRes] = await Promise.all([
         getWorkshops(),
         getTrainings(),
-        getFormQuestions()
+        getFormQuestions(),
+        getAllUserProfiles()
       ])
 
       if (workshopsRes.data) setWorkshops(workshopsRes.data)
       if (trainingsRes.data) setTrainings(trainingsRes.data)
       if (questionsRes.data) setFormQuestions(questionsRes.data)
+      if (usersRes.data) setUsers(usersRes.data)
     } catch (error) {
       console.error('Error loading data:', error)
     } finally {
@@ -117,6 +120,21 @@ export default function AdminPanel() {
     }
   }
 
+  const handleChangeUserRole = async (userId: string, newRole: string) => {
+    if (confirm(`¿Cambiar rol del usuario a "${newRole}"?`)) {
+      try {
+        const result = await updateUserRole(userId, newRole)
+        if (result.error) throw result.error
+
+        setUsers(users.map(u => 
+          u.id === userId ? { ...u, role: newRole } : u
+        ))
+      } catch (error) {
+        console.error('Error updating user role:', error)
+      }
+    }
+  }
+
   if (loading) {
     return <div className="loading">Cargando...</div>
   }
@@ -145,6 +163,12 @@ export default function AdminPanel() {
           onClick={() => setActiveTab('questions')}
         >
           Gestionar Preguntas del Formulario
+        </button>
+        <button
+          className={`admin-tab ${activeTab === 'users' ? 'active' : ''}`}
+          onClick={() => setActiveTab('users')}
+        >
+          Gestionar Usuarios
         </button>
       </div>
 
@@ -267,6 +291,73 @@ export default function AdminPanel() {
                       </td>
                     </tr>
                   ))}
+                </tbody>
+              </table>
+            </div>
+          </section>
+        )}
+
+        {activeTab === 'users' && (
+          <section className="admin-section">
+            <h2>Usuarios Registrados</h2>
+            <div className="users-table-wrapper">
+              <table className="users-table">
+                <thead>
+                  <tr>
+                    <th>Email</th>
+                    <th>Rol Actual</th>
+                    <th>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {users.length === 0 ? (
+                    <tr>
+                      <td colSpan={3} style={{ textAlign: 'center', padding: '20px' }}>
+                        No hay usuarios registrados
+                      </td>
+                    </tr>
+                  ) : (
+                    users.map(user => (
+                      <tr key={user.id}>
+                        <td>{user.email}</td>
+                        <td>
+                          <span className={`role-badge role-${user.role}`}>
+                            {user.role === 'admin' && '👨‍💼 Admin'}
+                            {user.role === 'socio' && '🏅 Socio'}
+                            {user.role === 'guest' && '👤 Invitado'}
+                          </span>
+                        </td>
+                        <td>
+                          <div className="role-actions">
+                            {user.role !== 'guest' && (
+                              <button
+                                onClick={() => handleChangeUserRole(user.id, 'guest')}
+                                className="btn-secondary btn-sm"
+                              >
+                                Invitado
+                              </button>
+                            )}
+                            {user.role !== 'socio' && (
+                              <button
+                                onClick={() => handleChangeUserRole(user.id, 'socio')}
+                                className="btn-secondary btn-sm"
+                              >
+                                Socio
+                              </button>
+                            )}
+                            {user.role !== 'admin' && (
+                              <button
+                                onClick={() => handleChangeUserRole(user.id, 'admin')}
+                                className="btn-warning btn-sm"
+                              >
+                                Admin
+                              </button>
+                            )}
+                          </div>
+                        </td>
+                      </tr>
+                    ))
+                  )}
                 </tbody>
               </table>
             </div>

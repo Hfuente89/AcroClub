@@ -177,6 +177,83 @@
   padding: 0.5rem;
 }
 
+/* Users Management Styles */
+.users-table-wrapper {
+  overflow-x: auto;
+  background: white;
+  border-radius: 0.5rem;
+  border: 1px solid var(--border);
+}
+
+.users-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.users-table th {
+  padding: 1rem;
+  text-align: left;
+  font-weight: 600;
+  color: white;
+  background-color: var(--primary);
+}
+
+.users-table td {
+  padding: 1rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.users-table tbody tr:hover {
+  background-color: #f5f5f5;
+}
+
+.role-badge {
+  display: inline-block;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.role-badge.role-admin {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+.role-badge.role-socio {
+  background-color: #d1ecf1;
+  color: #0c5460;
+}
+
+.role-badge.role-guest {
+  background-color: #f8f9fa;
+  color: #6c757d;
+}
+
+.role-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.btn-sm {
+  padding: 0.4rem 0.8rem;
+  font-size: 0.85rem;
+}
+
+.btn-warning {
+  background-color: #ff9800;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 0.5rem;
+  transition: all 0.3s ease;
+}
+
+.btn-warning:hover {
+  background-color: #e68900;
+}
+
 @media (max-width: 768px) {
   .admin-section {
     padding: 1rem;
@@ -188,6 +265,14 @@
   }
 
   .item-row button {
+    width: 100%;
+  }
+
+  .role-actions {
+    flex-direction: column;
+  }
+
+  .btn-sm {
     width: 100%;
   }
 }
