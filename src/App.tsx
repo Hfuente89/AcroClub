@@ -7,12 +7,17 @@ import WorkshopsPage from './pages/WorkshopsPage'
 import ProfilePage from './pages/ProfilePage'
 import AdminPanel from './pages/AdminPanel'
 import Navigation from './components/Navigation'
+import NotificationPermissionRequest from './components/NotificationPermissionRequest'
+import { useWorkshopNotifications } from './hooks/useWorkshopNotifications'
 import './App.css'
 
-function App() {
+function AppContent() {
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
   const [isAdmin, setIsAdmin] = useState(false)
+
+  // Initialize notifications
+  useWorkshopNotifications()
 
   useEffect(() => {
     // Inicializar Supabase
@@ -39,26 +44,31 @@ function App() {
 
   return (
     <AuthContext.Provider value={{ user, setUser, isAdmin, setIsAdmin }}>
-      <Router basename="/AcroClub">
-        {user && <Navigation />}
-        <Routes>
-          {!user ? (
-            <>
-              <Route path="/" element={<LoginPage />} />
-              <Route path="*" element={<Navigate to="/" />} />
-            </>
-          ) : (
-            <>
-              <Route path="/" element={<WorkshopsPage />} />
-              <Route path="/profile" element={<ProfilePage />} />
-              {isAdmin && <Route path="/admin" element={<AdminPanel />} />}
-              <Route path="*" element={<Navigate to="/" />} />
-            </>
-          )}
-        </Routes>
-      </Router>
+      {user && <Navigation />}
+      {user && <NotificationPermissionRequest />}
+      <Routes>
+        {!user ? (
+          <>
+            <Route path="/" element={<LoginPage />} />
+            <Route path="*" element={<Navigate to="/" />} />
+          </>
+        ) : (
+          <>
+            <Route path="/" element={<WorkshopsPage />} />
+            <Route path="/profile" element={<ProfilePage />} />
+            {isAdmin && <Route path="/admin" element={<AdminPanel />} />}
+            <Route path="*" element={<Navigate to="/" />} />
+          </>
+        )}
+      </Routes>
     </AuthContext.Provider>
   )
 }
 
-export default App
+function App() {
+  return (
+    <Router basename="/AcroClub">
+      <AppContent />
+    </Router>
+  )
+}
