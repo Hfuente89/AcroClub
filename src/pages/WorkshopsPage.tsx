@@ -56,6 +56,8 @@ export default function WorkshopsPage() {
 
   const handleRegister = async (registration: any) => {
     try {
+      if (!user) return
+      
       const result = await registerToWorkshop({
         ...registration,
         user_id: user.id,
@@ -75,6 +77,8 @@ export default function WorkshopsPage() {
 
   const handleRegisterDirectly = async (item: any) => {
     try {
+      if (!user) return
+      
       // Registrar socio directamente sin formulario
       const result = await registerToWorkshop({
         user_id: user.id,
