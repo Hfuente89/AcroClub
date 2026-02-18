@@ -1,6 +1,6 @@
 import { useState, useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { signIn, signUp, getUserProfile } from '../lib/supabaseClient'
+import { signIn, signUp, getUserProfile, createUserProfile } from '../lib/supabaseClient'
 import { AuthContext } from '../context/AuthContext'
 import './LoginPage.css'
 
@@ -22,6 +22,12 @@ export default function LoginPage() {
       let result
       if (isSignUp) {
         result = await signUp(email, password)
+        
+        if (!result.error && result.data?.user?.id) {
+          // Crear perfil de usuario después del registro
+          const userId = result.data.user.id
+          await createUserProfile(userId, email, 'socio')
+        }
       } else {
         result = await signIn(email, password)
       }

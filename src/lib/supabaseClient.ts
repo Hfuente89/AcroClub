@@ -164,6 +164,16 @@ export const createFormQuestion = async (question: any) => {
   return { data, error }
 }
 // User Profile functions
+export const createUserProfile = async (userId: string, email: string, role: string = 'socio') => {
+  const client = getSupabaseClient()
+  const { data, error } = await client
+    .from('user_profiles')
+    .insert([{ id: userId, email, role }])
+    .select()
+    .single()
+  return { data, error }
+}
+
 export const getUserProfile = async (userId: string) => {
   const client = getSupabaseClient()
   const { data, error } = await client
