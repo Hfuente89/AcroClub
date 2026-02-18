@@ -3,6 +3,8 @@ import { getWorkshops, getTrainings, registerToWorkshop, getUserRegistrations, g
 import { AuthContext } from '../context/AuthContext'
 import WorkshopCard from '../components/WorkshopCard'
 import RegistrationForm from '../components/RegistrationForm'
+import CalendarView from '../components/CalendarView'
+import ActivityDetails from '../components/ActivityDetails'
 import './WorkshopsPage.css'
 
 export default function WorkshopsPage() {
@@ -15,6 +17,7 @@ export default function WorkshopsPage() {
   const [activeTab, setActiveTab] = useState('workshops')
   const [selectedItem, setSelectedItem] = useState<any>(null)
   const [showRegistrationForm, setShowRegistrationForm] = useState(false)
+  const [selectedActivity, setSelectedActivity] = useState<any>(null)
 
   useEffect(() => {
     loadData()
@@ -74,6 +77,10 @@ export default function WorkshopsPage() {
     return userRegistrations.some(reg => reg.workshop_id === itemId)
   }
 
+  const handleActivityClick = (activity: any) => {
+    setSelectedActivity(activity)
+  }
+
   const isGuest = user?.id.startsWith('guest-') || false
 
   if (loading) {
@@ -99,6 +106,12 @@ export default function WorkshopsPage() {
           onClick={() => setActiveTab('trainings')}
         >
           🏋️ Entrenamientos ({trainings.length})
+        </button>
+        <button
+          className={`tab-button ${activeTab === 'calendar' ? 'active' : ''}`}
+          onClick={() => setActiveTab('calendar')}
+        >
+          📅 Calendario
         </button>
       </div>
 
@@ -166,6 +179,14 @@ export default function WorkshopsPage() {
             )}
           </div>
         )}
+
+        {activeTab === 'calendar' && (
+          <CalendarView
+            workshops={workshops}
+            trainings={trainings}
+            onActivityClick={handleActivityClick}
+          />
+        )}
       </div>
 
       {showRegistrationForm && selectedItem && !isGuest && (
@@ -177,6 +198,13 @@ export default function WorkshopsPage() {
             setShowRegistrationForm(false)
             setSelectedItem(null)
           }}
+        />
+      )}
+
+      {selectedActivity && (
+        <ActivityDetails
+          activity={selectedActivity}
+          onClose={() => setSelectedActivity(null)}
         />
       )}
     </div>
