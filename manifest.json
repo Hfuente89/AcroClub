@@ -1,31 +1,80 @@
 {
-  "name": "Acroyoga Club",
-  "short_name": "Acroyoga",
-  "description": "Talleres y entrenamientos de Acroyoga",
+  "name": "Acroyoga Club - Talleres y Entrenamientos",
+  "short_name": "Acroyoga Club",
+  "description": "App para gestionar talleres y entrenamientos de Acroyoga. Recibe notificaciones de nuevas actividades.",
   "start_url": "/AcroClub/",
   "scope": "/AcroClub/",
   "display": "standalone",
   "orientation": "portrait-primary",
-  "theme_color": "#ec4899",
-  "background_color": "#0f172a",
+  "theme_color": "#5b9cd6",
+  "background_color": "#f5f7fa",
+  "prefer_related_applications": false,
   "icons": [
     {
-      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect fill='%23ec4899' width='192' height='192'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-size='120' fill='white' font-family='system-ui'>🤸</text></svg>",
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect fill='%235b9cd6' width='192' height='192'/><polygon points='96,30 160,150 32,150' fill='white'/></svg>",
       "sizes": "192x192",
-      "type": "image/svg+xml"
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><defs><style>.icon-bg { fill: %235b9cd6; } .icon-shape { fill: white; }</style></defs><rect class='icon-bg' width='192' height='192'/><polygon class='icon-shape' points='96,30 160,150 32,150'/></svg>",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    },
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><defs><style>.icon-bg { fill: %235b9cd6; } .icon-shape { fill: white; }</style></defs><rect class='icon-bg' width='512' height='512'/><polygon class='icon-shape' points='256,80 430,400 82,400'/></svg>",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any"
     },
     {
       "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect fill='%23ec4899' width='512' height='512'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-size='300' fill='white' font-family='system-ui'>🤸</text></svg>",
       "sizes": "512x512",
-      "type": "image/svg+xml"
+      "type": "image/svg+xml",
+      "purpose": "maskable"
     }
   ],
-  "categories": ["sports", "productivity"],
+  "categories": ["sports", "productivity", "lifestyle"],
   "screenshots": [
     {
-      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 540 720'><rect fill='%230f172a' width='540' height='720'/><text x='270' y='360' dominant-baseline='middle' text-anchor='middle' font-size='60' fill='%23ec4899' font-family='system-ui'>Acroyoga Club</text></svg>",
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 540 720'><rect fill='%23f5f7fa' width='540' height='720'/><text x='270' y='360' dominant-baseline='middle' text-anchor='middle' font-size='60' fill='%235b9cd6' font-family='system-ui'>Acroyoga Club</text></svg>",
       "sizes": "540x720",
       "form_factor": "narrow"
+    },
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1280 720'><rect fill='%230f172a' width='1280' height='720'/><text x='640' y='360' dominant-baseline='middle' text-anchor='middle' font-size='60' fill='%23ec4899' font-family='system-ui'>Acroyoga Club</text></svg>",
+      "sizes": "1280x720",
+      "form_factor": "wide"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Registrarse en taller",
+      "short_name": "Taller",
+      "description": "Accede rápidamente a los talleres disponibles",
+      "url": "/AcroClub/?tab=workshops",
+      "icons": [
+        {
+          "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect fill='%23ec4899' width='192' height='192'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-size='120' fill='white' font-family='system-ui'>📋</text></svg>",
+          "sizes": "192x192",
+          "type": "image/svg+xml"
+        }
+      ]
+    },
+    {
+      "name": "Mi perfil",
+      "short_name": "Perfil",
+      "description": "Accede a tu perfil y configuración",
+      "url": "/AcroClub/profile",
+      "icons": [
+        {
+          "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect fill='%23ec4899' width='192' height='192'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-size='120' fill='white' font-family='system-ui'>👤</text></svg>",
+          "sizes": "192x192",
+          "type": "image/svg+xml"
+        }
+      ]
     }
   ]
 }
+
