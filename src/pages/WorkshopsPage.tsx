@@ -65,11 +65,17 @@ export default function WorkshopsPage() {
         created_at: new Date().toISOString()
       })
 
-      if (result.error) throw result.error
+      if (result.error) {
+        alert('Error al registrarse: ' + result.error.message)
+        throw result.error
+      }
 
-      setUserRegistrations([...userRegistrations, result.data?.[0]])
+      if (result.data && result.data[0]) {
+        setUserRegistrations([...userRegistrations, result.data[0]])
+      }
       setShowRegistrationForm(false)
       setSelectedItem(null)
+      alert('¡Te has registrado correctamente!')
     } catch (error) {
       console.error('Error registering:', error)
     }
@@ -86,9 +92,15 @@ export default function WorkshopsPage() {
         created_at: new Date().toISOString()
       })
 
-      if (result.error) throw result.error
+      if (result.error) {
+        alert('Error al registrarse: ' + result.error.message)
+        throw result.error
+      }
 
-      setUserRegistrations([...userRegistrations, result.data?.[0]])
+      if (result.data && result.data[0]) {
+        setUserRegistrations([...userRegistrations, result.data[0]])
+        alert('¡Te has registrado correctamente!')
+      }
     } catch (error) {
       console.error('Error registering:', error)
     }

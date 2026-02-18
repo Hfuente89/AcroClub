@@ -116,6 +116,7 @@ export const registerToWorkshop = async (registration: any) => {
   const { data, error } = await client
     .from('registrations')
     .insert([registration])
+    .select()
   return { data, error }
 }
 

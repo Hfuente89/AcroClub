@@ -10,7 +10,7 @@ export default function LoginPage() {
   const [isSignUp, setIsSignUp] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
-  const { setUser } = useContext(AuthContext)
+  const { setUser, setIsAdmin } = useContext(AuthContext)
   const navigate = useNavigate()
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -50,8 +50,16 @@ export default function LoginPage() {
           role: userRole as 'admin' | 'socio' | 'guest'
         }
         setUser(userData)
+        setIsAdmin(userRole === 'admin')
         localStorage.setItem('acroyoga_session', JSON.stringify(userData))
         navigate('/')
+      }
+    } catch (err: any) {
+      setError(err.message || 'Error desconocido')
+    } finally {
+      setLoading(false)
+    }
+  }
       }
     } catch (err: any) {
       setError(err.message || 'Error desconocido')
