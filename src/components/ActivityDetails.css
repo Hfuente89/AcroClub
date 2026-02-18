@@ -14,7 +14,8 @@
 }
 
 .activity-details-modal {
-  background: white;
+  background: var(--surface);
+  border: 2px solid var(--border);
   border-radius: 16px;
   max-width: 700px;
   width: 100%;
@@ -23,6 +24,7 @@
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
   position: relative;
   animation: slideUp 0.3s ease-out;
+  color: var(--text);
 }
 
 @keyframes slideUp {
@@ -61,7 +63,7 @@
 
 .activity-header {
   padding: 30px 30px 20px;
-  border-bottom: 3px solid #f0f0f0;
+  border-bottom: 2px solid var(--border);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -69,29 +71,30 @@
 }
 
 .activity-header.workshop {
-  background: linear-gradient(135deg, #fff3e0 0%, #ffffff 100%);
-  border-bottom-color: #ff9800;
+  background: linear-gradient(135deg, rgba(236, 72, 153, 0.1) 0%, var(--surface) 100%);
+  border-bottom-color: var(--primary);
 }
 
 .activity-header.training {
-  background: linear-gradient(135deg, #e0f7fa 0%, #ffffff 100%);
-  border-bottom-color: #00bcd4;
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, var(--surface) 100%);
+  border-bottom-color: var(--secondary);
 }
 
 .activity-header h2 {
   margin: 0;
   font-size: 1.8rem;
-  color: #333;
+  color: var(--text);
   flex: 1;
 }
 
 .activity-type-badge {
-  background: white;
+  background: var(--primary);
+  color: white;
   padding: 8px 16px;
   border-radius: 20px;
   font-size: 0.9rem;
   font-weight: 600;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px rgba(236, 72, 153, 0.3);
 }
 
 .activity-content {
@@ -113,18 +116,18 @@
 
 .info-label {
   font-weight: 600;
-  color: #666;
+  color: var(--text-muted);
   font-size: 0.9rem;
 }
 
 .info-value {
-  color: #333;
+  color: var(--text);
   font-size: 1rem;
   line-height: 1.5;
 }
 
 .attendees-section {
-  border-top: 2px solid #f0f0f0;
+  border-top: 2px solid var(--border);
   padding-top: 25px;
 }
 
@@ -134,10 +137,12 @@
   display: flex;
   align-items: center;
   gap: 10px;
+  color: var(--text);
 }
 
 .attendees-count {
-  background: #e0e0e0;
+  background: var(--surface-light);
+  color: var(--text);
   padding: 2px 10px;
   border-radius: 12px;
   font-size: 0.9rem;
@@ -147,13 +152,13 @@
 .loading-attendees {
   text-align: center;
   padding: 30px;
-  color: #666;
+  color: var(--text-muted);
 }
 
 .no-attendees {
   text-align: center;
   padding: 30px;
-  color: #999;
+  color: var(--text-muted);
   font-style: italic;
 }
 
@@ -168,13 +173,15 @@
   align-items: center;
   gap: 15px;
   padding: 15px;
-  background: #f9f9f9;
+  background: var(--surface-light);
   border-radius: 12px;
   transition: all 0.2s ease;
+  border: 1px solid var(--border);
 }
 
 .attendee-card:hover {
-  background: #f0f0f0;
+  background: rgba(236, 72, 153, 0.1);
+  border-color: var(--primary);
   transform: translateX(5px);
 }
 
@@ -201,43 +208,44 @@
 
 .attendee-name {
   font-weight: 600;
-  color: #333;
+  color: var(--text);
   font-size: 1rem;
 }
 
 .attendee-email {
-  color: #666;
+  color: var(--text-muted);
   font-size: 0.85rem;
 }
 
 .attendee-phone {
-  color: #666;
+  color: var(--text-muted);
   font-size: 0.85rem;
 }
 
 .guest-message {
-  border-top: 2px solid #f0f0f0;
+  border-top: 2px solid var(--border);
   padding-top: 25px;
   text-align: center;
 }
 
 .guest-message p {
-  background: #fff3cd;
+  background: rgba(245, 158, 11, 0.1);
   padding: 15px 20px;
   border-radius: 8px;
-  color: #856404;
+  border: 1px solid var(--warning);
+  color: var(--warning);
   margin: 0;
 }
 
 .activity-footer {
   padding: 20px 30px;
-  border-top: 2px solid #f0f0f0;
+  border-top: 2px solid var(--border);
   display: flex;
   justify-content: flex-end;
 }
 
 .close-modal-button {
-  background: var(--primary-color, #4CAF50);
+  background: var(--primary);
   color: white;
   border: none;
   padding: 12px 30px;
@@ -249,9 +257,9 @@
 }
 
 .close-modal-button:hover {
-  background: var(--primary-dark, #45a049);
+  background: var(--primary-dark);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+  box-shadow: 0 4px 12px rgba(236, 72, 153, 0.3);
 }
 
 /* Responsive */
@@ -262,6 +270,7 @@
 
   .activity-details-modal {
     max-height: 95vh;
+    border-radius: 12px;
   }
 
   .activity-header {
@@ -290,5 +299,28 @@
 
   .activity-footer {
     padding: 15px 20px;
+    flex-direction: column;
+  }
+
+  .close-modal-button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .activity-header h2 {
+    font-size: 1.2rem;
+  }
+
+  .activity-content {
+    padding: 15px;
+  }
+
+  .activity-info {
+    gap: 15px;
+  }
+
+  .attendees-section h3 {
+    font-size: 1.1rem;
   }
 }
