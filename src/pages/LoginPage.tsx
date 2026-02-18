@@ -60,13 +60,6 @@ export default function LoginPage() {
       setLoading(false)
     }
   }
-      }
-    } catch (err: any) {
-      setError(err.message || 'Error desconocido')
-    } finally {
-      setLoading(false)
-    }
-  }
 
   const handleGuestLogin = () => {
     const guestUser = {
