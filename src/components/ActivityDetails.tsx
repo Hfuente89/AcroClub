@@ -119,10 +119,10 @@ export default function ActivityDetails({ activity, onClose }: ActivityDetailsPr
                   {attendees.map((attendee, index) => (
                     <div key={attendee.id || index} className="attendee-card">
                       <div className="attendee-avatar">
-                        {attendee.name ? attendee.name.charAt(0).toUpperCase() : '?'}
+                        {attendee.full_name ? attendee.full_name.charAt(0).toUpperCase() : '?'}
                       </div>
                       <div className="attendee-info">
-                        <div className="attendee-name">{attendee.name || 'Anónimo'}</div>
+                        <div className="attendee-name">{attendee.full_name || 'Anónimo'}</div>
                         {attendee.email && (
                           <div className="attendee-email">{attendee.email}</div>
                         )}
