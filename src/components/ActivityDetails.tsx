@@ -1,4 +1,5 @@
 import { useState, useEffect, useContext } from 'react'
+import { Settings, Crown, Clock, FileText, MapPin, Users, Phone, AlertCircle } from 'lucide-react'
 import { AuthContext } from '../context/AuthContext'
 import { getWorkshopRegistrations } from '../lib/supabaseClient'
 import './ActivityDetails.css'
@@ -68,36 +69,36 @@ export default function ActivityDetails({ activity, onClose }: ActivityDetailsPr
         <button className="close-button" onClick={onClose}>✕</button>
         
         <div className={`activity-header ${activity.type}`}>
-          <h2>{activity.title || 'Entrenamiento'}</h2>
+          <h2>{activity.title || 'Actividad'}</h2>
           <span className="activity-type-badge">
-            {activity.type === 'workshop' ? '📋 Taller' : '🏋️ Entrenamiento'}
+            {activity.type === 'workshop' ? 'Taller' : 'Entrenamiento'}
           </span>
         </div>
 
         <div className="activity-content">
           <div className="activity-info">
             <div className="info-item">
-              <span className="info-label">📅 Fecha y hora:</span>
+              <span className="info-label"><Clock size={18} /> Fecha y hora:</span>
               <span className="info-value">{formatDate(activity.date)}</span>
             </div>
 
             {activity.description && (
               <div className="info-item">
-                <span className="info-label">📝 Descripción:</span>
+                <span className="info-label"><FileText size={18} /> Descripción:</span>
                 <span className="info-value">{activity.description}</span>
               </div>
             )}
 
             {activity.location && (
               <div className="info-item">
-                <span className="info-label">📍 Ubicación:</span>
+                <span className="info-label"><MapPin size={18} /> Ubicación:</span>
                 <span className="info-value">{activity.location}</span>
               </div>
             )}
 
             {activity.instructor && (
               <div className="info-item">
-                <span className="info-label">👨‍🏫 Instructor:</span>
+                <span className="info-label"><Crown size={18} /> Instructor:</span>
                 <span className="info-value">{activity.instructor}</span>
               </div>
             )}
@@ -106,7 +107,7 @@ export default function ActivityDetails({ activity, onClose }: ActivityDetailsPr
           {canViewAttendees && (
             <div className="attendees-section">
               <h3>
-                <span>👥 Asistentes</span>
+                <span><Users size={20} /> Asistentes</span>
                 <span className="attendees-count">({attendees.length})</span>
               </h3>
               
@@ -127,7 +128,7 @@ export default function ActivityDetails({ activity, onClose }: ActivityDetailsPr
                           <div className="attendee-email">{attendee.email}</div>
                         )}
                         {attendee.phone && (
-                          <div className="attendee-phone">📱 {attendee.phone}</div>
+                          <div className="attendee-phone"><Phone size={14} /> {attendee.phone}</div>
                         )}
                       </div>
                     </div>
@@ -139,7 +140,7 @@ export default function ActivityDetails({ activity, onClose }: ActivityDetailsPr
 
           {!canViewAttendees && (
             <div className="guest-message">
-              <p>ℹ️ Registrate como socio para ver la lista de asistentes</p>
+              <p><AlertCircle size={20} /> Registrate como socio para ver la lista de asistentes</p>
             </div>
           )}
         </div>

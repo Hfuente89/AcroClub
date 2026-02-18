@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react'
 
+import { Bell } from 'lucide-react'
+
 export default function NotificationPermissionRequest() {
   const [showPrompt, setShowPrompt] = useState(false)
   const [isGranted, setIsGranted] = useState(false)
@@ -54,8 +56,8 @@ export default function NotificationPermissionRequest() {
       zIndex: 1000,
       boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
     }}>
-      <span style={{ flex: 1, marginRight: '15px' }}>
-        🔔 Recibe notificaciones de nuevos talleres
+      <span style={{ flex: 1, marginRight: '15px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+        <Bell size={20} /> Recibe notificaciones de nuevos talleres
       </span>
       <div style={{ display: 'flex', gap: '10px' }}>
         <button

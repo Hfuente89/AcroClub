@@ -1,3 +1,4 @@
+import { Check, Calendar, Info } from 'lucide-react'
 import './WorkshopCard.css'
 
 interface WorkshopCardProps {
@@ -23,21 +24,22 @@ export default function WorkshopCard({
     <div className="workshop-card">
       <div className="card-header">
         <h3>{title}</h3>
-        {isRegistered && <span className="badge-registered">✓ Registrado</span>}
+        {isRegistered && <span className="badge-registered"><Check size={16} /> Registrado</span>}
       </div>
 
       <p className="card-description">{description}</p>
 
       <div className="card-footer">
-        <div className="card-date">📅 {date}</div>
+        <div className="card-date"><Calendar size={16} /> {date}</div>
 
         <div className="card-buttons">
           {onViewDetails && (
             <button
               onClick={onViewDetails}
               className="card-button-secondary"
+              title="Ver detalles"
             >
-              ℹ️ Detalles
+              <Info size={16} /> Detalles
             </button>
           )}
 

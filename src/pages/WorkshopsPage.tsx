@@ -1,4 +1,5 @@
 import { useState, useEffect, useContext } from 'react'
+import { Layers, Dumbbell, Calendar as CalendarIcon } from 'lucide-react'
 import { getWorkshops, getTrainings, registerToWorkshop, getUserRegistrations, getFormQuestions, getUserProfile } from '../lib/supabaseClient'
 import { AuthContext } from '../context/AuthContext'
 import WorkshopCard from '../components/WorkshopCard'

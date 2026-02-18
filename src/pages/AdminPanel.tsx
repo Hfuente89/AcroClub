@@ -324,7 +324,7 @@ export default function AdminPanel() {
                           <span className={`role-badge role-${user.role}`}>
                             {user.role === 'admin' && '👨‍💼 Admin'}
                             {user.role === 'socio' && '🏅 Socio'}
-                            {user.role === 'guest' && '👤 Invitado'}
+                            {user.role === 'guest' && 'Invitado'}
                           </span>
                         </td>
                         <td>
