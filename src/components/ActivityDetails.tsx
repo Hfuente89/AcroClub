@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from 'react'
-import { Settings, Crown, Clock, FileText, MapPin, Users, Phone, AlertCircle } from 'lucide-react'
+import { Crown, Clock, FileText, MapPin, Users, Phone, AlertCircle } from 'lucide-react'
 import { AuthContext } from '../context/AuthContext'
 import { getWorkshopRegistrations } from '../lib/supabaseClient'
 import './ActivityDetails.css'

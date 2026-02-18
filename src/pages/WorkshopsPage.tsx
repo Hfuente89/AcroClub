@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from 'react'
-import { Layers, Dumbbell, Calendar as CalendarIcon } from 'lucide-react'
+import { Layers, Dumbbell, Calendar } from 'lucide-react'
 import { getWorkshops, getTrainings, registerToWorkshop, getUserRegistrations, getFormQuestions, getUserProfile } from '../lib/supabaseClient'
 import { AuthContext } from '../context/AuthContext'
 import WorkshopCard from '../components/WorkshopCard'
@@ -157,19 +157,22 @@ export default function WorkshopsPage() {
           className={`tab-button ${activeTab === 'workshops' ? 'active' : ''}`}
           onClick={() => setActiveTab('workshops')}
         >
-          📋 Talleres ({workshops.length})
+          <Layers size={18} />
+          Talleres ({workshops.length})
         </button>
         <button
           className={`tab-button ${activeTab === 'trainings' ? 'active' : ''}`}
           onClick={() => setActiveTab('trainings')}
         >
-          🏋️ Entrenamientos ({trainings.length})
+          <Dumbbell size={18} />
+          Entrenamientos ({trainings.length})
         </button>
         <button
           className={`tab-button ${activeTab === 'calendar' ? 'active' : ''}`}
           onClick={() => setActiveTab('calendar')}
         >
-          📅 Calendario
+          <Calendar size={18} />
+          Calendario
         </button>
       </div>
 
