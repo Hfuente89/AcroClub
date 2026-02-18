@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from 'react'
-import { getWorkshops, getTrainings, registerToWorkshop, getUserRegistrations, getFormQuestions } from '../lib/supabaseClient'
+import { getWorkshops, getTrainings, registerToWorkshop, getUserRegistrations, getFormQuestions, getUserProfile } from '../lib/supabaseClient'
 import { AuthContext } from '../context/AuthContext'
 import WorkshopCard from '../components/WorkshopCard'
 import RegistrationForm from '../components/RegistrationForm'
@@ -13,6 +13,7 @@ export default function WorkshopsPage() {
   const [trainings, setTrainings] = useState<any[]>([])
   const [userRegistrations, setUserRegistrations] = useState<any[]>([])
   const [formQuestions, setFormQuestions] = useState<any[]>([])
+  const [userProfile, setUserProfile] = useState<any>(null)
   const [loading, setLoading] = useState(true)
   const [activeTab, setActiveTab] = useState('workshops')
   const [selectedItem, setSelectedItem] = useState<any>(null)
@@ -41,7 +42,13 @@ export default function WorkshopsPage() {
       setTrainings(trainingsRes.data || [])
       setFormQuestions(questionsRes.data || [])
 
+      // Cargar perfil del usuario
       if (user && user.id !== 'guest' && !user.id.startsWith('guest-')) {
+        const profileRes = await getUserProfile(user.id)
+        if (!profileRes.error && profileRes.data) {
+          setUserProfile(profileRes.data)
+        }
+
         const regsRes = await getUserRegistrations(user.id)
         if (!regsRes.error) {
           setUserRegistrations(regsRes.data || [])
@@ -87,16 +94,22 @@ export default function WorkshopsPage() {
         alert('No estás logueado')
         return
       }
+
+      // Verificar que el usuario haya completado su perfil
+      if (!userProfile?.full_name || !userProfile?.phone) {
+        alert('⚠️ Por favor completa tu perfil (nombre y teléfono) antes de registrarte')
+        return
+      }
       
       console.log('Registrando usuario:', user.id, 'a taller:', item.id)
       
-      // Registrar socio directamente sin formulario
+      // Registrar socio directamente con datos del perfil
       const result = await registerToWorkshop({
         user_id: user.id,
         workshop_id: item.id,
-        full_name: user.email || 'Socio',
-        phone: '000000000',
-        email: user.email || '',
+        full_name: userProfile.full_name,
+        phone: userProfile.phone,
+        email: user.email,
         created_at: new Date().toISOString()
       })
 
