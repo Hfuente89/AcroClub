@@ -2,11 +2,18 @@ import { useState, useMemo } from 'react'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import './DateTimePicker.css'
 
+interface CalendarEvent {
+  date: string
+  label: string
+  type?: 'workshop' | 'training'
+}
+
 interface DateTimePickerProps {
   value: string // datetime-local format: "2026-02-19T18:30"
   onChange: (value: string) => void
   defaultHour?: string
   defaultMinute?: string
+  events?: CalendarEvent[]
 }
 
 const DAYS_ES = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom']
@@ -15,7 +22,7 @@ const MONTHS_ES = [
   'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
 ]
 
-export default function DateTimePicker({ value, onChange, defaultHour = '10', defaultMinute = '00' }: DateTimePickerProps) {
+export default function DateTimePicker({ value, onChange, defaultHour = '10', defaultMinute = '00', events = [] }: DateTimePickerProps) {
   const today = new Date()
   today.setHours(0, 0, 0, 0)
 
@@ -84,6 +91,23 @@ export default function DateTimePicker({ value, onChange, defaultHour = '10', de
       today.getFullYear() === viewYear
   }
 
+  // Events on a given day
+  const getEventsOnDay = (day: number) => {
+    return events.filter(ev => {
+      const d = new Date(ev.date)
+      return d.getDate() === day && d.getMonth() === viewMonth && d.getFullYear() === viewYear
+    })
+  }
+
+  const selectedDayEvents = selectedDate
+    ? events.filter(ev => {
+        const d = new Date(ev.date)
+        return d.getDate() === selectedDate.getDate() &&
+          d.getMonth() === selectedDate.getMonth() &&
+          d.getFullYear() === selectedDate.getFullYear()
+      })
+    : []
+
   // Generate hour options
   const hours = Array.from({ length: 24 }, (_, i) => String(i).padStart(2, '0'))
   const minutes = ['00', '15', '30', '45']
@@ -106,10 +130,12 @@ export default function DateTimePicker({ value, onChange, defaultHour = '10', de
           {DAYS_ES.map(d => <span key={d} className="dtp-weekday">{d}</span>)}
         </div>
         <div className="dtp-days">
-          {calendarDays.map((day, i) => (
-            day === null ? (
-              <span key={`e-${i}`} className="dtp-day-empty" />
-            ) : (
+          {calendarDays.map((day, i) => {
+            if (day === null) return <span key={`e-${i}`} className="dtp-day-empty" />
+            const dayEvents = getEventsOnDay(day)
+            const hasWorkshop = dayEvents.some(e => e.type === 'workshop')
+            const hasTraining = dayEvents.some(e => e.type === 'training')
+            return (
               <button
                 key={day}
                 type="button"
@@ -117,9 +143,15 @@ export default function DateTimePicker({ value, onChange, defaultHour = '10', de
                 onClick={() => selectDay(day)}
               >
                 {day}
+                {dayEvents.length > 0 && (
+                  <span className="dtp-day-dots">
+                    {hasWorkshop && <span className="dtp-dot workshop" />}
+                    {hasTraining && <span className="dtp-dot training" />}
+                  </span>
+                )}
               </button>
             )
-          ))}
+          })}
         </div>
       </div>
 
@@ -147,6 +179,21 @@ export default function DateTimePicker({ value, onChange, defaultHour = '10', de
           </select>
         </div>
       </div>
+
+      {selectedDayEvents.length > 0 && (
+        <div className="dtp-day-events">
+          <span className="dtp-day-events-title">Actividades este día:</span>
+          {selectedDayEvents.map((ev, i) => (
+            <div key={i} className={`dtp-day-event ${ev.type || ''}`}>
+              <span className={`dtp-dot ${ev.type || ''}`} />
+              <span className="dtp-day-event-label">{ev.label}</span>
+              <span className="dtp-day-event-time">
+                {new Date(ev.date).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })}
+              </span>
+            </div>
+          ))}
+        </div>
+      )}
 
       {selectedDate && (
         <div className="dtp-summary">

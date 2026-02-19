@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { Pencil, Trash2, Plus, X, Check, ChevronDown, ChevronUp } from 'lucide-react'
 import { getWorkshops, getTrainings, createWorkshop, deleteWorkshop, updateWorkshop, createTraining, deleteTraining, updateTraining, getFormQuestions, updateFormQuestion, getAllUserProfiles, updateUserRole } from '../lib/supabaseClient'
 import DateTimePicker from '../components/DateTimePicker'
@@ -32,6 +32,11 @@ export default function AdminPanel() {
   // Editing trainings
   const [editingTrainingId, setEditingTrainingId] = useState<string | null>(null)
   const [editTrainingForm, setEditTrainingForm] = useState({ date: '' })
+
+  const calendarEvents = useMemo(() => [
+    ...workshops.map(w => ({ date: w.date, label: w.title || 'Taller', type: 'workshop' as const })),
+    ...trainings.map(t => ({ date: t.date, label: 'Entreno libre', type: 'training' as const }))
+  ], [workshops, trainings])
 
   useEffect(() => {
     loadData()
@@ -296,6 +301,7 @@ export default function AdminPanel() {
               <DateTimePicker
                 value={workshopForm.date}
                 onChange={(val) => setWorkshopForm({ ...workshopForm, date: val })}
+                events={calendarEvents}
               />
               <input
                 type="text"
@@ -327,6 +333,7 @@ export default function AdminPanel() {
                       <DateTimePicker
                         value={editWorkshopForm.date}
                         onChange={(val) => setEditWorkshopForm({ ...editWorkshopForm, date: val })}
+                        events={calendarEvents}
                       />
                       <input
                         type="text"
@@ -380,6 +387,7 @@ export default function AdminPanel() {
                 onChange={(val) => setTrainingForm({ date: val })}
                 defaultHour="19"
                 defaultMinute="30"
+                events={calendarEvents}
               />
               <button type="submit" className="btn-primary">Crear Entrenamiento</button>
             </form>
@@ -395,6 +403,7 @@ export default function AdminPanel() {
                         onChange={(val) => setEditTrainingForm({ date: val })}
                         defaultHour="19"
                         defaultMinute="30"
+                        events={calendarEvents}
                       />
                       <div className="item-edit-actions">
                         <button className="q-action-btn cancel" onClick={() => setEditingTrainingId(null)}>

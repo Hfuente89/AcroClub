@@ -167,6 +167,88 @@
   background: rgba(91, 156, 214, 0.06);
 }
 
+/* Day dots for events */
+.dtp-day {
+  position: relative;
+  flex-direction: column;
+}
+
+.dtp-day-dots {
+  display: flex;
+  gap: 3px;
+  justify-content: center;
+  position: absolute;
+  bottom: 2px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.dtp-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.dtp-dot.workshop {
+  background: var(--primary);
+}
+
+.dtp-dot.training {
+  background: var(--secondary);
+}
+
+.dtp-day.selected .dtp-dot {
+  background: rgba(255, 255, 255, 0.8);
+}
+
+/* Events list for selected day */
+.dtp-day-events {
+  padding: 8px 12px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  background: rgba(139, 92, 246, 0.04);
+}
+
+.dtp-day-events-title {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  margin-bottom: 2px;
+}
+
+.dtp-day-event {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  background: var(--background);
+  border: 1px solid var(--border);
+  font-size: 0.82rem;
+}
+
+.dtp-day-event .dtp-dot {
+  width: 6px;
+  height: 6px;
+}
+
+.dtp-day-event-label {
+  flex: 1;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.dtp-day-event-time {
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  font-weight: 500;
+}
+
 @media (max-width: 480px) {
   .dtp-calendar {
     padding: 10px;
