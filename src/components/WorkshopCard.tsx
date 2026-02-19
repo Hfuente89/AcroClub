@@ -43,15 +43,13 @@ export default function WorkshopCard({
             </button>
           )}
 
-          {!isGuest && (
-            <button
-              onClick={onRegister}
-              className={`card-button ${isRegistered ? 'registered' : ''}`}
-              disabled={isRegistered}
-            >
-              {isRegistered ? 'Registrado' : 'Registrarse'}
-            </button>
-          )}
+          <button
+            onClick={onRegister}
+            className={`card-button ${isRegistered ? 'registered' : ''}`}
+            disabled={isRegistered}
+          >
+            {isRegistered ? 'Registrado' : 'Registrarse'}
+          </button>
         </div>
       </div>
     </div>
