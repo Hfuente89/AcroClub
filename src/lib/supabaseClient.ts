@@ -101,6 +101,15 @@ export const createTraining = async (training: any) => {
   return { data, error }
 }
 
+export const updateTraining = async (id: string, training: any) => {
+  const client = getSupabaseClient()
+  const { data, error } = await client
+    .from('trainings')
+    .update(training)
+    .eq('id', id)
+  return { data, error }
+}
+
 export const deleteTraining = async (id: string) => {
   const client = getSupabaseClient()
   const { data, error } = await client

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Pencil, Trash2, Plus, X, Check, ChevronDown, ChevronUp } from 'lucide-react'
-import { getWorkshops, getTrainings, createWorkshop, deleteWorkshop, createTraining, deleteTraining, getFormQuestions, updateFormQuestion, getAllUserProfiles, updateUserRole } from '../lib/supabaseClient'
+import { getWorkshops, getTrainings, createWorkshop, deleteWorkshop, updateWorkshop, createTraining, deleteTraining, updateTraining, getFormQuestions, updateFormQuestion, getAllUserProfiles, updateUserRole } from '../lib/supabaseClient'
 import './AdminPanel.css'
 
 export default function AdminPanel() {
@@ -23,6 +23,14 @@ export default function AdminPanel() {
   const [trainingForm, setTrainingForm] = useState({
     date: ''
   })
+
+  // Editing workshops
+  const [editingWorkshopId, setEditingWorkshopId] = useState<string | null>(null)
+  const [editWorkshopForm, setEditWorkshopForm] = useState({ title: '', description: '', date: '', instagram: '' })
+
+  // Editing trainings
+  const [editingTrainingId, setEditingTrainingId] = useState<string | null>(null)
+  const [editTrainingForm, setEditTrainingForm] = useState({ date: '' })
 
   useEffect(() => {
     loadData()
@@ -106,6 +114,58 @@ export default function AdminPanel() {
       } catch (error) {
         console.error('Error deleting training:', error)
       }
+    }
+  }
+
+  const startEditWorkshop = (workshop: any) => {
+    setEditingWorkshopId(workshop.id)
+    const d = new Date(workshop.date)
+    const localDate = new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 16)
+    setEditWorkshopForm({
+      title: workshop.title || '',
+      description: workshop.description || '',
+      date: localDate,
+      instagram: workshop.instagram || ''
+    })
+  }
+
+  const handleSaveWorkshop = async () => {
+    if (!editingWorkshopId) return
+    try {
+      const result = await updateWorkshop(editingWorkshopId, {
+        title: editWorkshopForm.title,
+        description: editWorkshopForm.description,
+        date: editWorkshopForm.date,
+        instagram: editWorkshopForm.instagram
+      })
+      if (result.error) throw result.error
+      setWorkshops(workshops.map(w =>
+        w.id === editingWorkshopId ? { ...w, ...editWorkshopForm } : w
+      ))
+      setEditingWorkshopId(null)
+    } catch (error) {
+      console.error('Error updating workshop:', error)
+    }
+  }
+
+  const startEditTraining = (training: any) => {
+    setEditingTrainingId(training.id)
+    const d = new Date(training.date)
+    const localDate = new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 16)
+    setEditTrainingForm({ date: localDate })
+  }
+
+  const handleSaveTraining = async () => {
+    if (!editingTrainingId) return
+    try {
+      const result = await updateTraining(editingTrainingId, { date: editTrainingForm.date })
+      if (result.error) throw result.error
+      setTrainings(trainings.map(t =>
+        t.id === editingTrainingId ? { ...t, date: editTrainingForm.date } : t
+      ))
+      setEditingTrainingId(null)
+    } catch (error) {
+      console.error('Error updating training:', error)
     }
   }
 
@@ -250,23 +310,63 @@ export default function AdminPanel() {
             <h2 style={{ marginTop: '2rem' }}>Talleres Existentes</h2>
             <div className="items-list">
               {workshops.map(workshop => (
-                <div key={workshop.id} className="item-row">
-                  <div>
-                    <h3>{workshop.title}</h3>
-                    <p>{workshop.description}</p>
-                    <small>{new Date(workshop.date).toLocaleDateString('es-ES')}</small>
-                    {workshop.instagram && (
-                      <small style={{ display: 'block', marginTop: '4px', color: '#E1306C' }}>
-                        📸 {workshop.instagram}
-                      </small>
-                    )}
-                  </div>
-                  <button
-                    onClick={() => handleDeleteWorkshop(workshop.id)}
-                    className="btn-danger"
-                  >
-                    Eliminar
-                  </button>
+                <div key={workshop.id} className="item-card">
+                  {editingWorkshopId === workshop.id ? (
+                    <div className="item-edit-form">
+                      <input
+                        type="text"
+                        value={editWorkshopForm.title}
+                        onChange={(e) => setEditWorkshopForm({ ...editWorkshopForm, title: e.target.value })}
+                        placeholder="Título"
+                      />
+                      <textarea
+                        value={editWorkshopForm.description}
+                        onChange={(e) => setEditWorkshopForm({ ...editWorkshopForm, description: e.target.value })}
+                        placeholder="Descripción"
+                        rows={2}
+                      />
+                      <input
+                        type="datetime-local"
+                        value={editWorkshopForm.date}
+                        onChange={(e) => setEditWorkshopForm({ ...editWorkshopForm, date: e.target.value })}
+                      />
+                      <input
+                        type="text"
+                        value={editWorkshopForm.instagram}
+                        onChange={(e) => setEditWorkshopForm({ ...editWorkshopForm, instagram: e.target.value })}
+                        placeholder="Instagram"
+                      />
+                      <div className="item-edit-actions">
+                        <button className="q-action-btn cancel" onClick={() => setEditingWorkshopId(null)}>
+                          <X size={16} /> Cancelar
+                        </button>
+                        <button className="q-action-btn save" onClick={handleSaveWorkshop}>
+                          <Check size={16} /> Guardar
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <>
+                      <div className="item-card-info">
+                        <h3>{workshop.title}</h3>
+                        <p>{workshop.description}</p>
+                        <small>{new Date(workshop.date).toLocaleDateString('es-ES')}</small>
+                        {workshop.instagram && (
+                          <small style={{ display: 'block', marginTop: '4px', color: '#E1306C' }}>
+                            📸 {workshop.instagram}
+                          </small>
+                        )}
+                      </div>
+                      <div className="item-card-actions">
+                        <button className="q-icon-btn edit" onClick={() => startEditWorkshop(workshop)} title="Editar">
+                          <Pencil size={16} />
+                        </button>
+                        <button className="q-icon-btn delete" onClick={() => handleDeleteWorkshop(workshop.id)} title="Eliminar">
+                          <Trash2 size={16} />
+                        </button>
+                      </div>
+                    </>
+                  )}
                 </div>
               ))}
             </div>
@@ -289,16 +389,38 @@ export default function AdminPanel() {
             <h2 style={{ marginTop: '2rem' }}>Entrenamientos Existentes</h2>
             <div className="items-list">
               {trainings.map(training => (
-                <div key={training.id} className="item-row">
-                  <div>
-                    <small>{new Date(training.date).toLocaleDateString('es-ES')}</small>
-                  </div>
-                  <button
-                    onClick={() => handleDeleteTraining(training.id)}
-                    className="btn-danger"
-                  >
-                    Eliminar
-                  </button>
+                <div key={training.id} className="item-card">
+                  {editingTrainingId === training.id ? (
+                    <div className="item-edit-form">
+                      <input
+                        type="datetime-local"
+                        value={editTrainingForm.date}
+                        onChange={(e) => setEditTrainingForm({ date: e.target.value })}
+                      />
+                      <div className="item-edit-actions">
+                        <button className="q-action-btn cancel" onClick={() => setEditingTrainingId(null)}>
+                          <X size={16} /> Cancelar
+                        </button>
+                        <button className="q-action-btn save" onClick={handleSaveTraining}>
+                          <Check size={16} /> Guardar
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <>
+                      <div className="item-card-info">
+                        <small>{new Date(training.date).toLocaleDateString('es-ES')}</small>
+                      </div>
+                      <div className="item-card-actions">
+                        <button className="q-icon-btn edit" onClick={() => startEditTraining(training)} title="Editar">
+                          <Pencil size={16} />
+                        </button>
+                        <button className="q-icon-btn delete" onClick={() => handleDeleteTraining(training.id)} title="Eliminar">
+                          <Trash2 size={16} />
+                        </button>
+                      </div>
+                    </>
+                  )}
                 </div>
               ))}
             </div>
@@ -436,67 +558,46 @@ export default function AdminPanel() {
         {activeTab === 'users' && (
           <section className="admin-section">
             <h2>Usuarios Registrados</h2>
-            <div className="users-table-wrapper">
-              <table className="users-table">
-                <thead>
-                  <tr>
-                    <th>Email</th>
-                    <th>Rol Actual</th>
-                    <th>Acciones</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {users.length === 0 ? (
-                    <tr>
-                      <td colSpan={3} style={{ textAlign: 'center', padding: '20px' }}>
-                        No hay usuarios registrados
-                      </td>
-                    </tr>
-                  ) : (
-                    users.map(user => (
-                      <tr key={user.id}>
-                        <td>{user.email}</td>
-                        <td>
-                          <span className={`role-badge role-${user.role}`}>
-                            {user.role === 'admin' && '👨‍💼 Admin'}
-                            {user.role === 'socio' && '🏅 Socio'}
-                            {user.role === 'guest' && 'Invitado'}
-                          </span>
-                        </td>
-                        <td>
-                          <div className="role-actions">
-                            {user.role !== 'guest' && (
-                              <button
-                                onClick={() => handleChangeUserRole(user.id, 'guest')}
-                                className="btn-secondary btn-sm"
-                              >
-                                Invitado
-                              </button>
-                            )}
-                            {user.role !== 'socio' && (
-                              <button
-                                onClick={() => handleChangeUserRole(user.id, 'socio')}
-                                className="btn-secondary btn-sm"
-                              >
-                                Socio
-                              </button>
-                            )}
-                            {user.role !== 'admin' && (
-                              <button
-                                onClick={() => handleChangeUserRole(user.id, 'admin')}
-                                className="btn-warning btn-sm"
-                              >
-                                Admin
-                              </button>
-                            )}
-                          </div>
-                        </td>
-                      </tr>
-                    ))
-                  )}
-                </tbody>
-              </table>
-            </div>
+            {users.length === 0 ? (
+              <p style={{ textAlign: 'center', padding: '20px', color: '#999' }}>No hay usuarios registrados</p>
+            ) : (
+              <div className="user-cards">
+                {users.map(user => (
+                  <div key={user.id} className="user-card">
+                    <div className="user-card-header">
+                      <div className="user-card-avatar">
+                        {(user.email || '?')[0].toUpperCase()}
+                      </div>
+                      <div className="user-card-info">
+                        <span className="user-card-email">{user.email}</span>
+                        <span className={`role-badge role-${user.role}`}>
+                          {user.role === 'admin' && '👨‍💼 Admin'}
+                          {user.role === 'socio' && '🏅 Socio'}
+                          {user.role === 'guest' && 'Invitado'}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="user-card-actions">
+                      {user.role !== 'guest' && (
+                        <button className="btn-role btn-role-guest" onClick={() => handleChangeUserRole(user.id, 'guest')}>
+                          Invitado
+                        </button>
+                      )}
+                      {user.role !== 'socio' && (
+                        <button className="btn-role btn-role-socio" onClick={() => handleChangeUserRole(user.id, 'socio')}>
+                          Socio
+                        </button>
+                      )}
+                      {user.role !== 'admin' && (
+                        <button className="btn-role btn-role-admin" onClick={() => handleChangeUserRole(user.id, 'admin')}>
+                          Admin
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </section>
         )}
       </div>
