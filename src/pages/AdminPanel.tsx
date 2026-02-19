@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { Pencil, Trash2, Plus, X, Check, ChevronDown, ChevronUp } from 'lucide-react'
 import { getWorkshops, getTrainings, createWorkshop, deleteWorkshop, createTraining, deleteTraining, getFormQuestions, updateFormQuestion, getAllUserProfiles, updateUserRole } from '../lib/supabaseClient'
 import './AdminPanel.css'
 
@@ -14,7 +15,8 @@ export default function AdminPanel() {
   const [workshopForm, setWorkshopForm] = useState({
     title: '',
     description: '',
-    date: ''
+    date: '',
+    instagram: ''
   })
 
   // Training form
@@ -58,7 +60,7 @@ export default function AdminPanel() {
       if (result.error) throw result.error
 
       setWorkshops([...workshops, result.data?.[0]])
-      setWorkshopForm({ title: '', description: '', date: '' })
+      setWorkshopForm({ title: '', description: '', date: '', instagram: '' })
     } catch (error) {
       console.error('Error creating workshop:', error)
     }
@@ -104,6 +106,46 @@ export default function AdminPanel() {
       } catch (error) {
         console.error('Error deleting training:', error)
       }
+    }
+  }
+
+  const [editingQuestionId, setEditingQuestionId] = useState<string | null>(null)
+  const [editingLabel, setEditingLabel] = useState('')
+  const [editingType, setEditingType] = useState('')
+  const [editingOptions, setEditingOptions] = useState<string[]>([])
+  const [expandedQuestionId, setExpandedQuestionId] = useState<string | null>(null)
+
+  const startEditQuestion = (question: any) => {
+    setEditingQuestionId(question.id)
+    setEditingLabel(question.label || '')
+    setEditingType(question.type || 'text')
+    setEditingOptions(question.options ? [...question.options] : [])
+  }
+
+  const cancelEditQuestion = () => {
+    setEditingQuestionId(null)
+    setEditingLabel('')
+    setEditingType('')
+    setEditingOptions([])
+  }
+
+  const saveEditQuestion = async (id: string) => {
+    try {
+      const updates: any = { label: editingLabel, type: editingType }
+      if (editingType === 'select' || editingType === 'radio') {
+        updates.options = editingOptions.filter(o => o.trim() !== '')
+      } else {
+        updates.options = null
+      }
+      const result = await updateFormQuestion(id, updates)
+      if (result.error) throw result.error
+
+      setFormQuestions(formQuestions.map(q =>
+        q.id === id ? { ...q, ...updates } : q
+      ))
+      setEditingQuestionId(null)
+    } catch (error) {
+      console.error('Error updating question:', error)
     }
   }
 
@@ -196,6 +238,12 @@ export default function AdminPanel() {
                 onChange={(e) => setWorkshopForm({ ...workshopForm, date: e.target.value })}
                 required
               />
+              <input
+                type="text"
+                placeholder="Instagram (ej: @usuario1, @usuario2)"
+                value={workshopForm.instagram}
+                onChange={(e) => setWorkshopForm({ ...workshopForm, instagram: e.target.value })}
+              />
               <button type="submit" className="btn-primary">Crear Taller</button>
             </form>
 
@@ -207,6 +255,11 @@ export default function AdminPanel() {
                     <h3>{workshop.title}</h3>
                     <p>{workshop.description}</p>
                     <small>{new Date(workshop.date).toLocaleDateString('es-ES')}</small>
+                    {workshop.instagram && (
+                      <small style={{ display: 'block', marginTop: '4px', color: '#E1306C' }}>
+                        📸 {workshop.instagram}
+                      </small>
+                    )}
                   </div>
                   <button
                     onClick={() => handleDeleteWorkshop(workshop.id)}
@@ -254,45 +307,128 @@ export default function AdminPanel() {
 
         {activeTab === 'questions' && (
           <section className="admin-section">
-            <h2>Preguntas del Formulario de Registro</h2>
-            <div className="questions-table-wrapper">
-              <table className="questions-table">
-                <thead>
-                  <tr>
-                    <th>Pregunta</th>
-                    <th>Tipo</th>
-                    <th>Acción</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {formQuestions.map(question => (
-                    <tr key={question.id}>
-                      <td>
-                        <input
-                          type="text"
-                          value={question.label}
-                          onChange={(e) => handleUpdateQuestion(question.id, 'label', e.target.value)}
-                        />
-                      </td>
-                      <td>
-                        <select
-                          value={question.type}
-                          onChange={(e) => handleUpdateQuestion(question.id, 'type', e.target.value)}
-                        >
-                          <option value="text">Texto</option>
-                          <option value="email">Email</option>
-                          <option value="tel">Teléfono</option>
-                          <option value="select">Selección</option>
-                          <option value="radio">Opción Múltiple</option>
-                        </select>
-                      </td>
-                      <td>
-                        <button className="btn-secondary">Editar</button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+            <h2>Preguntas del Formulario</h2>
+            <div className="question-cards">
+              {formQuestions.map(question => {
+                const isEditing = editingQuestionId === question.id
+                const isExpanded = expandedQuestionId === question.id
+                const hasOptions = question.type === 'select' || question.type === 'radio'
+                const typeLabels: Record<string, string> = {
+                  text: 'Texto', email: 'Email', tel: 'Teléfono',
+                  select: 'Selección', radio: 'Opción Múltiple'
+                }
+
+                return (
+                  <div key={question.id} className={`question-card ${isEditing ? 'editing' : ''}`}>
+                    {!isEditing ? (
+                      <>
+                        <div className="question-card-header" onClick={() => setExpandedQuestionId(isExpanded ? null : question.id)}>
+                          <div className="question-card-info">
+                            <span className="question-label">{question.label}</span>
+                            <span className="question-type-badge">{typeLabels[question.type] || question.type}</span>
+                          </div>
+                          <div className="question-card-actions">
+                            <button
+                              className="q-icon-btn edit"
+                              onClick={(e) => { e.stopPropagation(); startEditQuestion(question) }}
+                              title="Editar"
+                            >
+                              <Pencil size={16} />
+                            </button>
+                            {hasOptions && (
+                              <button className="q-icon-btn expand" onClick={(e) => { e.stopPropagation(); setExpandedQuestionId(isExpanded ? null : question.id) }}>
+                                {isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                              </button>
+                            )}
+                          </div>
+                        </div>
+                        {isExpanded && hasOptions && question.options && (
+                          <div className="question-options-preview">
+                            <span className="options-title">Opciones:</span>
+                            {question.options.map((opt: string, i: number) => (
+                              <span key={i} className="option-chip">{opt}</span>
+                            ))}
+                            {(!question.options || question.options.length === 0) && (
+                              <span className="no-options">Sin opciones definidas</span>
+                            )}
+                          </div>
+                        )}
+                      </>
+                    ) : (
+                      <div className="question-edit-form">
+                        <div className="edit-field">
+                          <label>Pregunta</label>
+                          <textarea
+                            value={editingLabel}
+                            onChange={(e) => setEditingLabel(e.target.value)}
+                            rows={2}
+                            placeholder="Escribe la pregunta..."
+                          />
+                        </div>
+                        <div className="edit-field">
+                          <label>Tipo</label>
+                          <select
+                            value={editingType}
+                            onChange={(e) => setEditingType(e.target.value)}
+                          >
+                            <option value="text">Texto</option>
+                            <option value="email">Email</option>
+                            <option value="tel">Teléfono</option>
+                            <option value="select">Selección</option>
+                            <option value="radio">Opción Múltiple</option>
+                          </select>
+                        </div>
+
+                        {(editingType === 'select' || editingType === 'radio') && (
+                          <div className="edit-field">
+                            <label>Opciones de respuesta</label>
+                            <div className="edit-options-list">
+                              {editingOptions.map((opt, i) => (
+                                <div key={i} className="edit-option-row">
+                                  <input
+                                    type="text"
+                                    value={opt}
+                                    onChange={(e) => {
+                                      const updated = [...editingOptions]
+                                      updated[i] = e.target.value
+                                      setEditingOptions(updated)
+                                    }}
+                                    placeholder={`Opción ${i + 1}`}
+                                  />
+                                  <button
+                                    type="button"
+                                    className="q-icon-btn delete"
+                                    onClick={() => setEditingOptions(editingOptions.filter((_, idx) => idx !== i))}
+                                    title="Eliminar opción"
+                                  >
+                                    <Trash2 size={14} />
+                                  </button>
+                                </div>
+                              ))}
+                              <button
+                                type="button"
+                                className="add-option-btn"
+                                onClick={() => setEditingOptions([...editingOptions, ''])}
+                              >
+                                <Plus size={14} /> Añadir opción
+                              </button>
+                            </div>
+                          </div>
+                        )}
+
+                        <div className="edit-actions">
+                          <button className="q-action-btn cancel" onClick={cancelEditQuestion}>
+                            <X size={16} /> Cancelar
+                          </button>
+                          <button className="q-action-btn save" onClick={() => saveEditQuestion(question.id)}>
+                            <Check size={16} /> Guardar
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )
+              })}
             </div>
           </section>
         )}

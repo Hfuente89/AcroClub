@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from 'react'
-import { Crown, Clock, FileText, MapPin, Users, Phone, AlertCircle } from 'lucide-react'
+import { Crown, Clock, FileText, MapPin, Users, Phone, AlertCircle, Instagram } from 'lucide-react'
 import { AuthContext } from '../context/AuthContext'
 import { getWorkshopRegistrations } from '../lib/supabaseClient'
 import './ActivityDetails.css'
@@ -12,6 +12,7 @@ interface Activity {
   type: 'workshop' | 'training'
   location?: string
   instructor?: string
+  instagram?: string
 }
 
 interface ActivityDetailsProps {
@@ -63,6 +64,18 @@ export default function ActivityDetails({ activity, onClose }: ActivityDetailsPr
     })
   }
 
+  const cleanPhoneForWhatsApp = (phone: string): string => {
+    let cleaned = phone.replace(/\D/g, '')
+    if (cleaned.length <= 9) cleaned = '34' + cleaned
+    return cleaned
+  }
+
+  const parseInstagramHandles = (text: string): string[] => {
+    return text.split(/[,;\n]+/)
+      .map(h => h.trim().replace(/^@/, ''))
+      .filter(h => h.length > 0)
+  }
+
   return (
     <div className="activity-details-overlay" onClick={onClose}>
       <div className="activity-details-modal" onClick={(e) => e.stopPropagation()}>
@@ -102,6 +115,25 @@ export default function ActivityDetails({ activity, onClose }: ActivityDetailsPr
                 <span className="info-value">{activity.instructor}</span>
               </div>
             )}
+
+            {activity.instagram && (
+              <div className="info-item">
+                <span className="info-label"><Instagram size={18} /> Instagram:</span>
+                <div className="info-value instagram-links">
+                  {parseInstagramHandles(activity.instagram).map((handle, i) => (
+                    <a
+                      key={i}
+                      href={`https://instagram.com/${handle}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="instagram-link"
+                    >
+                      @{handle}
+                    </a>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
 
           {canViewAttendees && (
@@ -123,12 +155,17 @@ export default function ActivityDetails({ activity, onClose }: ActivityDetailsPr
                         {attendee.full_name ? attendee.full_name.charAt(0).toUpperCase() : '?'}
                       </div>
                       <div className="attendee-info">
-                        <div className="attendee-name">{attendee.full_name || 'Anónimo'}</div>
-                        {attendee.email && (
-                          <div className="attendee-email">{attendee.email}</div>
-                        )}
-                        {attendee.phone && (
-                          <div className="attendee-phone"><Phone size={14} /> {attendee.phone}</div>
+                        {attendee.phone ? (
+                          <a
+                            href={`https://wa.me/${cleanPhoneForWhatsApp(attendee.phone)}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="attendee-name whatsapp-link"
+                          >
+                            {attendee.full_name || 'Anónimo'}
+                          </a>
+                        ) : (
+                          <div className="attendee-name">{attendee.full_name || 'Anónimo'}</div>
                         )}
                       </div>
                     </div>
