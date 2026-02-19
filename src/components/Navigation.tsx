@@ -31,38 +31,38 @@ export default function Navigation() {
         </div>
 
         <div className="nav-links">
+          <div className="nav-user-info">
+            {!isGuest && <span className="user-email">{user?.email}</span>}
+            {isGuest && <span className="user-email">Invitado</span>}
+          </div>
+
           {isAdmin && location.pathname !== '/admin' && (
             <button
               onClick={() => navigate('/admin')}
-              className="nav-button"
+              className="nav-button icon-only"
               title="Panel Administrativo"
+              aria-label="Panel Administrativo"
             >
-              <Settings size={18} />
-              <span>Admin</span>
+              <Settings size={20} />
             </button>
           )}
 
           <button
             onClick={() => navigate('/profile')}
-            className="nav-button"
+            className="nav-button icon-only"
             title="Mi Perfil"
+            aria-label="Mi Perfil"
           >
-            <User size={18} />
-            <span>Perfil</span>
+            <User size={20} />
           </button>
-
-          <div className="nav-user-info">
-            {!isGuest && <span className="user-email">{user?.email}</span>}
-            {isGuest && <span className="user-email"><User size={16} /> Invitado</span>}
-          </div>
 
           <button
             onClick={handleLogout}
-            className="nav-button logout"
+            className="nav-button icon-only logout"
             title="Cerrar sesión"
+            aria-label="Cerrar sesión"
           >
-            <LogOut size={18} />
-            <span>Salir</span>
+            <LogOut size={20} />
           </button>
         </div>
       </div>
