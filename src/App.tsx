@@ -6,6 +6,8 @@ import LoginPage from './pages/LoginPage'
 import WorkshopsPage from './pages/WorkshopsPage'
 import ProfilePage from './pages/ProfilePage'
 import AdminPanel from './pages/AdminPanel'
+import AboutPage from './pages/AboutPage'
+import ContactPage from './pages/ContactPage'
 import Navigation from './components/Navigation'
 import NotificationPermissionRequest from './components/NotificationPermissionRequest'
 import { useWorkshopNotifications } from './hooks/useWorkshopNotifications'
@@ -56,6 +58,8 @@ function AppContent() {
           <>
             <Route path="/" element={<WorkshopsPage />} />
             <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/sobre-nosotros" element={<AboutPage />} />
+            <Route path="/contacto" element={<ContactPage />} />
             {isAdmin && <Route path="/admin" element={<AdminPanel />} />}
             <Route path="*" element={<Navigate to="/" />} />
           </>

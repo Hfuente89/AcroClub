@@ -1,6 +1,6 @@
-import { useContext } from 'react'
+import { useState, useContext, useRef, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
-import { Settings, User, LogOut } from 'lucide-react'
+import { Settings, User, LogOut, Menu, Info, Phone } from 'lucide-react'
 import { AuthContext } from '../context/AuthContext'
 import { signOut } from '../lib/supabaseClient'
 import './Navigation.css'
@@ -9,6 +9,24 @@ export default function Navigation() {
   const { user, setUser, isAdmin } = useContext(AuthContext)
   const navigate = useNavigate()
   const location = useLocation()
+  const [menuOpen, setMenuOpen] = useState(false)
+  const menuRef = useRef<HTMLDivElement>(null)
+
+  // Close menu on outside click
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setMenuOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
+
+  // Close menu on route change
+  useEffect(() => {
+    setMenuOpen(false)
+  }, [location.pathname])
 
   const handleLogout = async () => {
     try {
@@ -21,8 +39,6 @@ export default function Navigation() {
     }
   }
 
-  const isGuest = user?.id.startsWith('guest-')
-
   return (
     <nav className="navigation">
       <div className="nav-container">
@@ -30,40 +46,42 @@ export default function Navigation() {
           <h1 onClick={() => navigate('/')}>Acroyoga Club</h1>
         </div>
 
-        <div className="nav-links">
-          <div className="nav-user-info">
-            {!isGuest && <span className="user-email">{user?.email}</span>}
-            {isGuest && <span className="user-email">Invitado</span>}
-          </div>
+        <div className="nav-right" ref={menuRef}>
+          <button
+            className="nav-menu-btn"
+            onClick={() => setMenuOpen(!menuOpen)}
+            aria-label="Menú"
+          >
+            <Menu size={22} />
+          </button>
 
-          {isAdmin && location.pathname !== '/admin' && (
-            <button
-              onClick={() => navigate('/admin')}
-              className="nav-button icon-only"
-              title="Panel Administrativo"
-              aria-label="Panel Administrativo"
-            >
-              <Settings size={20} />
-            </button>
+          {menuOpen && (
+            <div className="nav-dropdown">
+              {isAdmin && location.pathname !== '/admin' && (
+                <button className="nav-dropdown-item" onClick={() => navigate('/admin')}>
+                  <Settings size={18} />
+                  <span>Configuración</span>
+                </button>
+              )}
+              <button className="nav-dropdown-item" onClick={() => navigate('/profile')}>
+                <User size={18} />
+                <span>Mi Perfil</span>
+              </button>
+              <button className="nav-dropdown-item" onClick={() => navigate('/sobre-nosotros')}>
+                <Info size={18} />
+                <span>Sobre Nosotros</span>
+              </button>
+              <button className="nav-dropdown-item" onClick={() => navigate('/contacto')}>
+                <Phone size={18} />
+                <span>Contacto</span>
+              </button>
+              <div className="nav-dropdown-divider" />
+              <button className="nav-dropdown-item logout" onClick={handleLogout}>
+                <LogOut size={18} />
+                <span>Cerrar sesión</span>
+              </button>
+            </div>
           )}
-
-          <button
-            onClick={() => navigate('/profile')}
-            className="nav-button icon-only"
-            title="Mi Perfil"
-            aria-label="Mi Perfil"
-          >
-            <User size={20} />
-          </button>
-
-          <button
-            onClick={handleLogout}
-            className="nav-button icon-only logout"
-            title="Cerrar sesión"
-            aria-label="Cerrar sesión"
-          >
-            <LogOut size={20} />
-          </button>
         </div>
       </div>
     </nav>

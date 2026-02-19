@@ -1,0 +1,68 @@
+.about-page {
+  padding: 1.5rem 1rem;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.about-container h1 {
+  text-align: center;
+  font-size: 1.6rem;
+  margin-bottom: 1.5rem;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.about-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.about-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1rem;
+  color: white;
+}
+
+.about-card h2 {
+  font-size: 1.15rem;
+  color: var(--text);
+  margin-bottom: 0.75rem;
+}
+
+.about-card p {
+  color: var(--text-muted);
+  line-height: 1.6;
+  font-size: 0.95rem;
+}
+
+.about-card a {
+  color: var(--primary);
+  text-decoration: underline;
+  font-weight: 600;
+}
+
+.about-card a:hover {
+  color: var(--secondary);
+}
+
+@media (max-width: 480px) {
+  .about-page {
+    padding: 1rem 0.75rem;
+  }
+
+  .about-card {
+    padding: 1.25rem 1rem;
+  }
+}

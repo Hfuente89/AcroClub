@@ -1,0 +1,91 @@
+.contact-page {
+  padding: 1.5rem 1rem;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.contact-container h1 {
+  text-align: center;
+  font-size: 1.6rem;
+  margin-bottom: 1.5rem;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.contact-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.contact-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1rem;
+  color: white;
+}
+
+.contact-card h2 {
+  font-size: 1.15rem;
+  color: var(--text);
+  margin-bottom: 0.75rem;
+}
+
+.contact-card p {
+  color: var(--text-muted);
+  line-height: 1.6;
+  font-size: 0.95rem;
+  margin-bottom: 1rem;
+}
+
+.contact-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0.75rem 1.5rem;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 1rem;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.contact-link.whatsapp {
+  background: #25D366;
+  color: white;
+}
+
+.contact-link.whatsapp:hover {
+  background: #1da851;
+  transform: translateY(-2px);
+}
+
+.contact-link.instagram {
+  background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+  color: white;
+}
+
+.contact-link.instagram:hover {
+  opacity: 0.9;
+  transform: translateY(-2px);
+}
+
+@media (max-width: 480px) {
+  .contact-page {
+    padding: 1rem 0.75rem;
+  }
+
+  .contact-card {
+    padding: 1.25rem 1rem;
+  }
+}
