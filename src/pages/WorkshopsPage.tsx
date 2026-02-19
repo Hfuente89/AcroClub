@@ -36,10 +36,6 @@ export default function WorkshopsPage() {
         getFormQuestions()
       ])
 
-      if (workshopsRes.error) throw workshopsRes.error
-      if (trainingsRes.error) throw trainingsRes.error
-      if (questionsRes.error) throw questionsRes.error
-
       setWorkshops(workshopsRes.data || [])
       setTrainings(trainingsRes.data || [])
       setFormQuestions(questionsRes.data || [])
