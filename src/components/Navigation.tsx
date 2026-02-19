@@ -2,7 +2,7 @@ import { useState, useContext, useRef, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { Settings, User, LogOut, Menu, Info, Phone } from 'lucide-react'
 import { AuthContext } from '../context/AuthContext'
-import { signOut } from '../lib/supabaseClient'
+import { signOut, getUserProfile } from '../lib/supabaseClient'
 import './Navigation.css'
 
 export default function Navigation() {
@@ -10,7 +10,26 @@ export default function Navigation() {
   const navigate = useNavigate()
   const location = useLocation()
   const [menuOpen, setMenuOpen] = useState(false)
+  const [initials, setInitials] = useState('')
   const menuRef = useRef<HTMLDivElement>(null)
+
+  const isGuest = user?.id.startsWith('guest-')
+
+  // Fetch user profile for initials
+  useEffect(() => {
+    if (!user || isGuest) return
+    getUserProfile(user.id).then(result => {
+      if (result.data?.full_name) {
+        const parts = result.data.full_name.trim().split(/\s+/)
+        const ini = parts.length >= 2
+          ? (parts[0][0] + parts[1][0]).toUpperCase()
+          : parts[0].substring(0, 2).toUpperCase()
+        setInitials(ini)
+      } else if (user.email) {
+        setInitials(user.email.substring(0, 2).toUpperCase())
+      }
+    })
+  }, [user, isGuest])
 
   // Close menu on outside click
   useEffect(() => {
@@ -48,11 +67,11 @@ export default function Navigation() {
 
         <div className="nav-right" ref={menuRef}>
           <button
-            className="nav-menu-btn"
+            className={`nav-menu-btn${!isGuest && initials ? ' has-initials' : ''}`}
             onClick={() => setMenuOpen(!menuOpen)}
             aria-label="Menú"
           >
-            <Menu size={22} />
+            {isGuest || !initials ? <Menu size={22} /> : <span className="nav-initials">{initials}</span>}
           </button>
 
           {menuOpen && (
@@ -63,10 +82,12 @@ export default function Navigation() {
                   <span>Configuración</span>
                 </button>
               )}
-              <button className="nav-dropdown-item" onClick={() => navigate('/profile')}>
-                <User size={18} />
-                <span>Mi Perfil</span>
-              </button>
+              {!isGuest && (
+                <button className="nav-dropdown-item" onClick={() => navigate('/profile')}>
+                  <User size={18} />
+                  <span>Mi Perfil</span>
+                </button>
+              )}
               <button className="nav-dropdown-item" onClick={() => navigate('/sobre-nosotros')}>
                 <Info size={18} />
                 <span>Sobre Nosotros</span>
