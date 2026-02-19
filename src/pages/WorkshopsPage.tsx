@@ -288,6 +288,17 @@ export default function WorkshopsPage() {
         <ActivityDetails
           activity={selectedActivity}
           onClose={() => setSelectedActivity(null)}
+          isRegistered={isRegistered(selectedActivity.id)}
+          onRegister={() => {
+            if (!isRegistered(selectedActivity.id)) {
+              if (user?.role === 'socio' || user?.role === 'admin') {
+                handleRegisterDirectly(selectedActivity)
+              } else {
+                setSelectedItem(selectedActivity)
+                setShowRegistrationForm(true)
+              }
+            }
+          }}
         />
       )}
     </div>

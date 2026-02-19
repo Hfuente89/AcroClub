@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from 'react'
-import { Crown, Clock, FileText, MapPin, Users, Phone, AlertCircle, Instagram } from 'lucide-react'
+import { Crown, Clock, FileText, MapPin, Users, Phone, AlertCircle, Instagram, Check } from 'lucide-react'
 import { AuthContext } from '../context/AuthContext'
 import { getWorkshopRegistrations } from '../lib/supabaseClient'
 import './ActivityDetails.css'
@@ -18,9 +18,11 @@ interface Activity {
 interface ActivityDetailsProps {
   activity: Activity
   onClose: () => void
+  onRegister?: () => void
+  isRegistered?: boolean
 }
 
-export default function ActivityDetails({ activity, onClose }: ActivityDetailsProps) {
+export default function ActivityDetails({ activity, onClose, onRegister, isRegistered = false }: ActivityDetailsProps) {
   const { user } = useContext(AuthContext)
   const [attendees, setAttendees] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
@@ -183,6 +185,15 @@ export default function ActivityDetails({ activity, onClose }: ActivityDetailsPr
         </div>
 
         <div className="activity-footer">
+          {onRegister && (
+            <button
+              className={`register-modal-button ${isRegistered ? 'registered' : ''}`}
+              onClick={onRegister}
+              disabled={isRegistered}
+            >
+              {isRegistered ? <><Check size={16} /> Registrado</> : 'Registrarse'}
+            </button>
+          )}
           <button className="close-modal-button" onClick={onClose}>
             Cerrar
           </button>
