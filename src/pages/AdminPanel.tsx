@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Pencil, Trash2, Plus, X, Check, ChevronDown, ChevronUp } from 'lucide-react'
 import { getWorkshops, getTrainings, createWorkshop, deleteWorkshop, updateWorkshop, createTraining, deleteTraining, updateTraining, getFormQuestions, updateFormQuestion, getAllUserProfiles, updateUserRole } from '../lib/supabaseClient'
+import DateTimePicker from '../components/DateTimePicker'
 import './AdminPanel.css'
 
 export default function AdminPanel() {
@@ -292,11 +293,9 @@ export default function AdminPanel() {
                 onChange={(e) => setWorkshopForm({ ...workshopForm, description: e.target.value })}
                 required
               />
-              <input
-                type="datetime-local"
+              <DateTimePicker
                 value={workshopForm.date}
-                onChange={(e) => setWorkshopForm({ ...workshopForm, date: e.target.value })}
-                required
+                onChange={(val) => setWorkshopForm({ ...workshopForm, date: val })}
               />
               <input
                 type="text"
@@ -325,10 +324,9 @@ export default function AdminPanel() {
                         placeholder="Descripción"
                         rows={2}
                       />
-                      <input
-                        type="datetime-local"
+                      <DateTimePicker
                         value={editWorkshopForm.date}
-                        onChange={(e) => setEditWorkshopForm({ ...editWorkshopForm, date: e.target.value })}
+                        onChange={(val) => setEditWorkshopForm({ ...editWorkshopForm, date: val })}
                       />
                       <input
                         type="text"
@@ -377,11 +375,9 @@ export default function AdminPanel() {
           <section className="admin-section">
             <h2>Crear Nuevo Entrenamiento</h2>
             <form onSubmit={handleCreateTraining} className="admin-form">
-              <input
-                type="datetime-local"
+              <DateTimePicker
                 value={trainingForm.date}
-                onChange={(e) => setTrainingForm({ ...trainingForm, date: e.target.value })}
-                required
+                onChange={(val) => setTrainingForm({ date: val })}
               />
               <button type="submit" className="btn-primary">Crear Entrenamiento</button>
             </form>
@@ -392,10 +388,9 @@ export default function AdminPanel() {
                 <div key={training.id} className="item-card">
                   {editingTrainingId === training.id ? (
                     <div className="item-edit-form">
-                      <input
-                        type="datetime-local"
+                      <DateTimePicker
                         value={editTrainingForm.date}
-                        onChange={(e) => setEditTrainingForm({ date: e.target.value })}
+                        onChange={(val) => setEditTrainingForm({ date: val })}
                       />
                       <div className="item-edit-actions">
                         <button className="q-action-btn cancel" onClick={() => setEditingTrainingId(null)}>
