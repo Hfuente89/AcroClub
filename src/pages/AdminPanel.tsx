@@ -67,7 +67,7 @@ export default function AdminPanel() {
 
       if (result.error) throw result.error
 
-      setWorkshops([...workshops, result.data?.[0]])
+      await loadData()
       setWorkshopForm({ title: '', description: '', date: '', instagram: '' })
     } catch (error) {
       console.error('Error creating workshop:', error)
@@ -97,7 +97,7 @@ export default function AdminPanel() {
 
       if (result.error) throw result.error
 
-      setTrainings([...trainings, result.data?.[0]])
+      await loadData()
       setTrainingForm({ date: '' })
     } catch (error) {
       console.error('Error creating training:', error)

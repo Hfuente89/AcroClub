@@ -53,7 +53,7 @@ export const getWorkshops = async () => {
   const { data, error } = await client
     .from('workshops')
     .select('*')
-    .order('date', { ascending: true })
+    .order('date', { ascending: false })
   return { data, error }
 }
 
@@ -89,7 +89,7 @@ export const getTrainings = async () => {
   const { data, error } = await client
     .from('trainings')
     .select('*')
-    .order('date', { ascending: true })
+    .order('date', { ascending: false })
   return { data, error }
 }
 
