@@ -408,7 +408,8 @@ export default function AdminPanel() {
                   ) : (
                     <>
                       <div className="item-card-info">
-                        <small>{new Date(training.date).toLocaleDateString('es-ES')}</small>
+                        <h3>Entreno libre</h3>
+                        <small>{new Date(training.date).toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: '2-digit' }).replace('.', '')}</small>
                       </div>
                       <div className="item-card-actions">
                         <button className="q-icon-btn edit" onClick={() => startEditTraining(training)} title="Editar">
