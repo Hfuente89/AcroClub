@@ -232,8 +232,8 @@ export default function WorkshopsPage() {
               trainings.map(training => (
                 <WorkshopCard
                   key={training.id}
-                  title="Entrenamiento"
-                  description="Sesión de entrenamiento grupal"
+                  title="Entreno Libre"
+                  description="Sesión de entreno libre grupal"
                   date={new Date(training.date).toLocaleDateString('es-ES', {
                     weekday: 'long',
                     year: 'numeric',

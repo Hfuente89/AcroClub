@@ -35,7 +35,7 @@ export default function AdminPanel() {
 
   const calendarEvents = useMemo(() => [
     ...workshops.map(w => ({ date: w.date, label: w.title || 'Taller', type: 'workshop' as const })),
-    ...trainings.map(t => ({ date: t.date, label: 'Entreno libre', type: 'training' as const }))
+    ...trainings.map(t => ({ date: t.date, label: 'Entreno Libre', type: 'training' as const }))
   ], [workshops, trainings])
 
   useEffect(() => {
@@ -417,8 +417,8 @@ export default function AdminPanel() {
                   ) : (
                     <>
                       <div className="item-card-info">
-                        <h3>Entreno libre</h3>
-                        <small>{new Date(training.date).toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: '2-digit' }).replace('.', '')}</small>
+                        <h3>Entreno Libre</h3>
+                        <small>{new Date(training.date).toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' }).replace('.', '')}</small>
                       </div>
                       <div className="item-card-actions">
                         <button className="q-icon-btn edit" onClick={() => startEditTraining(training)} title="Editar">

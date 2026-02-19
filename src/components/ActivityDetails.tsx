@@ -82,9 +82,9 @@ export default function ActivityDetails({ activity, onClose }: ActivityDetailsPr
         <button className="close-button" onClick={onClose}>✕</button>
         
         <div className={`activity-header ${activity.type}`}>
-          <h2>{activity.title || (activity.type === 'workshop' ? 'Taller' : 'Entreno libre')}</h2>
+          <h2>{activity.title || (activity.type === 'workshop' ? 'Taller' : 'Entreno Libre')}</h2>
           <span className="activity-type-badge">
-            {activity.type === 'workshop' ? 'Taller' : 'Entreno libre'}
+            {activity.type === 'workshop' ? 'Taller' : 'Entreno Libre'}
           </span>
         </div>
 
