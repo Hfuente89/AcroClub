@@ -68,6 +68,7 @@ export default function LoginPage() {
       role: 'guest' as const
     }
     setUser(guestUser)
+    setIsAdmin(false)
     localStorage.setItem('acroyoga_session', JSON.stringify(guestUser))
     navigate('/')
   }
