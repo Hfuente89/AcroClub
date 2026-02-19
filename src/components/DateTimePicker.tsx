@@ -5,6 +5,8 @@ import './DateTimePicker.css'
 interface DateTimePickerProps {
   value: string // datetime-local format: "2026-02-19T18:30"
   onChange: (value: string) => void
+  defaultHour?: string
+  defaultMinute?: string
 }
 
 const DAYS_ES = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom']
@@ -13,7 +15,7 @@ const MONTHS_ES = [
   'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
 ]
 
-export default function DateTimePicker({ value, onChange }: DateTimePickerProps) {
+export default function DateTimePicker({ value, onChange, defaultHour = '10', defaultMinute = '00' }: DateTimePickerProps) {
   const today = new Date()
   today.setHours(0, 0, 0, 0)
 
@@ -24,8 +26,8 @@ export default function DateTimePicker({ value, onChange }: DateTimePickerProps)
   const [viewYear, setViewYear] = useState(selectedDate?.getFullYear() ?? today.getFullYear())
   const [viewMonth, setViewMonth] = useState(selectedDate?.getMonth() ?? today.getMonth())
 
-  const selectedHour = selectedDate ? String(selectedDate.getHours()).padStart(2, '0') : '10'
-  const selectedMinute = selectedDate ? String(selectedDate.getMinutes()).padStart(2, '0') : '00'
+  const selectedHour = selectedDate ? String(selectedDate.getHours()).padStart(2, '0') : defaultHour
+  const selectedMinute = selectedDate ? String(selectedDate.getMinutes()).padStart(2, '0') : defaultMinute
 
   // Build calendar grid
   const calendarDays = useMemo(() => {

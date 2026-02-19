@@ -378,6 +378,8 @@ export default function AdminPanel() {
               <DateTimePicker
                 value={trainingForm.date}
                 onChange={(val) => setTrainingForm({ date: val })}
+                defaultHour="19"
+                defaultMinute="30"
               />
               <button type="submit" className="btn-primary">Crear Entrenamiento</button>
             </form>
@@ -391,6 +393,8 @@ export default function AdminPanel() {
                       <DateTimePicker
                         value={editTrainingForm.date}
                         onChange={(val) => setEditTrainingForm({ date: val })}
+                        defaultHour="19"
+                        defaultMinute="30"
                       />
                       <div className="item-edit-actions">
                         <button className="q-action-btn cancel" onClick={() => setEditingTrainingId(null)}>
