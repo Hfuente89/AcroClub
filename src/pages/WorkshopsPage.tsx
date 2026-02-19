@@ -1,11 +1,12 @@
 import { useState, useEffect, useContext } from 'react'
-import { Layers, Dumbbell, Calendar } from 'lucide-react'
+import { Layers, Dumbbell, Calendar, Instagram } from 'lucide-react'
 import { getWorkshops, getTrainings, registerToWorkshop, getUserRegistrations, getFormQuestions, getUserProfile } from '../lib/supabaseClient'
 import { AuthContext } from '../context/AuthContext'
 import WorkshopCard from '../components/WorkshopCard'
 import RegistrationForm from '../components/RegistrationForm'
 import CalendarView from '../components/CalendarView'
 import ActivityDetails from '../components/ActivityDetails'
+import InstagramFeed from '../components/InstagramFeed'
 import './WorkshopsPage.css'
 
 export default function WorkshopsPage() {
@@ -174,6 +175,13 @@ export default function WorkshopsPage() {
           <Calendar size={18} />
           Calendario
         </button>
+        <button
+          className={`tab-button ${activeTab === 'instagram' ? 'active' : ''}`}
+          onClick={() => setActiveTab('instagram')}
+        >
+          <Instagram size={18} />
+          Instagram
+        </button>
       </div>
 
       <div className="content">
@@ -261,6 +269,10 @@ export default function WorkshopsPage() {
             trainings={trainings}
             onActivityClick={handleActivityClick}
           />
+        )}
+
+        {activeTab === 'instagram' && (
+          <InstagramFeed />
         )}
       </div>
 
